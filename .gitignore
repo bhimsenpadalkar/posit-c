@@ -9,3 +9,4 @@ posit_c.cbp
 tests/Testing/*
 tests/test_posit
 posit_c
+Testing/*
