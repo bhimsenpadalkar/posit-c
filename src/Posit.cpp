@@ -22,7 +22,7 @@ void Posit::setFloatValue(float value) {
     int maxFractionBits = 23;
     int8_t exponent = ((rep.binaryValue >> maxFractionBits) & 0x00FF) - 127;
     uint32_t fraction = (rep.binaryValue & 0x3FFFFF);
-
+    bool isNegative = value < 0;
     int base = (int) pow(2, this->exponentBits);
     int regime = exponent / base;
     regime = regime < 0 ? (regime - 1) : regime;
@@ -56,6 +56,9 @@ void Posit::setFloatValue(float value) {
 
     int finalPosit = positRegime | positExponent | positFraction;
 
+    if(isNegative){
+        finalPosit = -finalPosit;
+    }
     this->binaryFormat = finalPosit;
 }
 
