@@ -10,3 +10,4 @@ tests/Testing/*
 tests/test_posit
 posit_c
 Testing/*
+.vscode/*

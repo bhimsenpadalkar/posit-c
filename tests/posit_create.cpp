@@ -39,6 +39,13 @@ void shouldNotHavingExponentWhileTheRegimeBitsAreMore(){
     ASSERT(num->getBinaryFormat(), 0x7E);
 }
 
+void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore(){
+    Posit *num = new Posit(8,1);
+    num->setFloatValue(512.9);
+
+    ASSERT(num->getBinaryFormat(), 0x7D);
+}
+
 /*
  * If the first bit after the sign bit is a 0,
  * then the regime bits continue until you run out of bits or encounter a 1.
@@ -54,13 +61,6 @@ void shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(){
     num->setFloatValue(4096);
 
     ASSERT(num->getBinaryFormat(), 0x7F);
-}
-
-void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore(){
-    Posit *num = new Posit(8,1);
-    num->setFloatValue(512.9);
-
-    ASSERT(num->getBinaryFormat(), 0x7D);
 }
 
 
@@ -79,7 +79,7 @@ int main() {
     shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore();
 
     shouldNotHavingExponentWhileTheRegimeBitsAreMore(); // changed (added 58,61)
-//    shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(); //problem not fixed more regime bits
-//    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore();//problem not fixed more exponent bits
+    shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(); //problem not fixed more regime bits
+    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore();//problem not fixed more exponent bits
     return 0;
 }
