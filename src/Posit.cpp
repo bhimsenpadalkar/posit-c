@@ -1,11 +1,10 @@
 #include <cstdint>
 #include "Posit.h"
 #include <math.h>
-#include <iostream>
 
 using namespace std;
 
-#define IS_NEGATIVE(a) a<0
+#define IS_NEGATIVE(a) a < 0
 
 union FloatRep {
     float floatValue;
@@ -34,12 +33,18 @@ void Posit::setFloatValue(float value) {
 int Posit::convertFloatToPosit(int8_t exponent, uint32_t fraction, bool isNegative) const {
     int maxFractionBits = 23;
     int base = (int) pow(2, exponentBits);
+
     int regime = exponent / base;
     regime = IS_NEGATIVE(regime) ? (regime - 1) : regime;
+
     int positExponent = exponent % base;
     positExponent = IS_NEGATIVE(positExponent) ? (base + positExponent) : positExponent;
+
+    uint32_t positFraction = fraction;
+
     uint32_t positRegime = 0;
     int bitsRequiredForRegime = 0;
+    int bitsRequiredForExponent = 0;
     int bitsRequiredForSign = 1;
 
     if (IS_NEGATIVE(exponent)) {
@@ -50,31 +55,29 @@ int Posit::convertFloatToPosit(int8_t exponent, uint32_t fraction, bool isNegati
         bitsRequiredForRegime = regime + 2;
     }
 
-    int usedBits = bitsRequiredForRegime + bitsRequiredForSign;
-    int remainingBits = totalBits - usedBits;
-    int bitsRequiredForExponent = exponentBits;
-    if (remainingBits < exponentBits) {
-        bitsRequiredForExponent = remainingBits;
+    int remainingBits = totalBits - (bitsRequiredForRegime + bitsRequiredForSign);
+
+    if(bitsRequiredForRegime > (totalBits - bitsRequiredForSign)){
+        positRegime >>= bitsRequiredForRegime -(totalBits - bitsRequiredForSign);
+        remainingBits = 0;
+        bitsRequiredForRegime = totalBits - bitsRequiredForSign;
     }
 
-    if(remainingBits <= 0){
+    if(remainingBits > exponentBits){
+        bitsRequiredForExponent = exponentBits;
+    } else if (remainingBits == 0){
         positExponent = 0;
         bitsRequiredForExponent = 0;
+    } else {
+        bitsRequiredForExponent = remainingBits;
     }
+    positExponent >>= exponentBits - bitsRequiredForExponent;
 
     remainingBits -= bitsRequiredForExponent;
 
-    uint32_t positFraction = fraction >> (maxFractionBits - remainingBits);
-
-    if(remainingBits < 0){
-        positRegime >>= -remainingBits;
-        positFraction >>= -remainingBits;
-        bitsRequiredForRegime+= remainingBits;
-    }
-
     positRegime <<= totalBits - (bitsRequiredForSign + bitsRequiredForRegime);
-    positExponent <<= totalBits - (bitsRequiredForSign + bitsRequiredForRegime + bitsRequiredForExponent);
-    positExponent >>= exponentBits - bitsRequiredForExponent;
+    positExponent <<= remainingBits;
+    positFraction >>= maxFractionBits - remainingBits;
     int finalPosit = positRegime | positExponent | positFraction;
 
     if (isNegative) {

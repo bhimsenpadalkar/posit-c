@@ -71,6 +71,13 @@ void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore() {
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
 
+void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1() {
+    Posit *num = new Posit(8,3);
+    num->setFloatValue(302365697638.4);
+
+    ASSERT(num->getBinaryFormat(), 0x7D);
+}
+
 int main() {
     shouldConvertFloatToPositWithLessPrecision_8();
     shouldConvertFloatToPositWithLessPrecision_10();
@@ -81,5 +88,6 @@ int main() {
     shouldNotHavingExponentWhileTheRegimeBitsAreMore(); // changed (added 58,61)
     shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(); //problem not fixed more regime bits
     shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore(); //problem not fixed more exponent bits
+    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1();
     return 0;
 }
