@@ -11,3 +11,4 @@ tests/test_posit
 posit_c
 Testing/
 .vscode/
+tests/test_posit_float
