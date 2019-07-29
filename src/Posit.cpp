@@ -95,7 +95,7 @@ uint64_t Posit::getBinaryFormat() {
     return binaryFormat;
 }
 
-double Posit::toFloat() {
+double Posit::toDouble() {
     int positBits = 64;
     uint64_t posit = this->binaryFormat << (positBits - totalBits);
     bool sign = posit >> (positBits - 1);
