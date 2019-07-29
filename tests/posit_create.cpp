@@ -4,44 +4,45 @@ using namespace std;
 
 #define ASSERT(a,b) if(a != b) throw std::runtime_error("Failed")
 
+Posit* createPosit(uint8_t totalBits,uint8_t exponentBits, float value){
+    Posit *num = new Posit(totalBits,exponentBits);
+    num -> setFloatValue(value);
+
+    return num;
+}
+
 void shouldConvertFloatToPositWithLessPrecision_8(){
-    Posit *num = new Posit(8,0);
-    num->setFloatValue(4.625);
+    Posit *num = createPosit(8, 0, 4.625);
 
     ASSERT(num->getBinaryFormat(), 0x71);
 }
 
 void shouldConvertFloatToPositWithLessPrecision_10(){
-    Posit *num = new Posit(10,0);
-    num->setFloatValue(4.625);
+    Posit *num = createPosit(10, 0, 4.625);
 
     ASSERT(num->getBinaryFormat(), 0x1C5);
 }
 
 void shouldConvertFloatToPositWithExponent(){
-    Posit *num = new Posit(8,2);
-    num->setFloatValue(0.009765625);
+    Posit *num = createPosit(8, 2, 0.009765625);
 
     ASSERT(num->getBinaryFormat(), 0x15);
 }
 
 void shouldConvertNegativeFloatToPositWithExponent(){
-    Posit *num = new Posit(8,2);
-    num->setFloatValue(-0.009765625);
-
+    Posit *num = createPosit(8, 2, -0.009765625);
+    
     ASSERT(num->getBinaryFormat(), -0x15);
 }
 
 void shouldNotHavingExponentWhileTheRegimeBitsAreMore(){
-    Posit *num = new Posit(8,1);
-    num->setFloatValue(2048.2);
+    Posit *num = createPosit(8, 1, 2048.2);
 
     ASSERT(num->getBinaryFormat(), 0x7E);
 }
 
 void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore(){
-    Posit *num = new Posit(8,1);
-    num->setFloatValue(512.9);
+    Posit *num = createPosit(8,1,512.9);
 
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
@@ -57,23 +58,20 @@ void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore(){
  */
 
 void shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(){
-    Posit *num = new Posit(8,1);
-    num->setFloatValue(4096);
+    Posit *num = createPosit(8,1,4096);
 
     ASSERT(num->getBinaryFormat(), 0x7F);
 }
 
 
 void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore() {
-    Posit *num = new Posit(8,2);
-    num->setFloatValue(262144.3);
+    Posit *num = createPosit(8,2,262144.3);
 
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
 
 void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1() {
-    Posit *num = new Posit(8,3);
-    num->setFloatValue(302365697638.4);
+    Posit *num = createPosit(8,3,302365697638.4);
 
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
