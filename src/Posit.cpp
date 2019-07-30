@@ -96,112 +96,67 @@ uint64_t Posit::getBinaryFormat() {
     return binaryFormat;
 }
 
-double Posit::toDouble() {
-    int positBits = 64;
-    uint64_t posit = this->binaryFormat << (positBits - totalBits);
-    bool sign = posit >> (positBits - 1);
-    posit = sign ? -posit : posit;
-    uint64_t remainingBits = posit << 1;
-
-    if(remainingBits == 0){
-        Representation<double,uint64_t> inf = Representation<double,uint64_t>{};
-        inf.binaryValue = 0x7FF0000000000000;
-        return sign ? inf.value : 0;
-    }
-
-    bool exponentSign = remainingBits >> (positBits - 1);
-    remainingBits <<= 1;
-
-    int usedBits = 1;
-    int regimeBits = 1;
-
-    while (remainingBits >> (positBits - 1) == exponentSign && regimeBits < (totalBits - 1)) {
-        regimeBits++;
-        remainingBits <<= 1;
-    }
-
-    int regime = exponentSign ? regimeBits - 1 : -regimeBits;
-
-    if (regimeBits != (totalBits - 1)) {
-        remainingBits <<= 1;
-        regimeBits++;
-    }
-
-    usedBits += regimeBits;
-    int bitsInExponent = 0;
-    uint64_t exponent = 0;
-    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits) {
-        exponent <<= 1;
-        exponent = exponent | (remainingBits >> (positBits - 1));
-        remainingBits <<= 1;
-        bitsInExponent++;
-    }
-
-    int doubleExponent = (int) pow(2, exponentBits);
-    doubleExponent = (doubleExponent * regime);
-    doubleExponent += exponent;
-    int exponentBitsForRepresentation = 12;
-
-    return getRepresentedNumber<double, uint64_t>(sign, remainingBits, doubleExponent, exponentBitsForRepresentation);
-}
-
 void Posit::setPositValue(uint64_t posit) {
     this->binaryFormat = posit;
 }
 
+double Posit::toDouble() {
+    return getRepresentedNumber<double, uint64_t>( 64, 12,0x7FF0000000000000 );
+}
+
 float Posit::toFloat() {
-    int positBits = 32;
+    return getRepresentedNumber<float, uint32_t>(32, 9,0x7F800000);
+}
+
+template <typename T,typename U> // T is the type either float or double and U is the type either uint32_t or uint64_t
+T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation, U infiniteValue) const {
+
     uint64_t bitsOnLeftSide = this->binaryFormat << (64 - totalBits);
-    uint32_t posit = bitsOnLeftSide >> (64 - positBits);
-    bool sign = posit >> (positBits - 1);
+    U posit = bitsOnLeftSide >> (64 - totalRepresentationBits);
+    bool sign = posit >> (totalRepresentationBits - 1);
     posit = sign ? -posit : posit;
-    uint32_t remainingBits = posit << 1;
+    U remainingBits = posit << 1;
 
     if(remainingBits == 0){
-        Representation<float,uint32_t > inf = Representation<float,uint32_t >{};
-        inf.binaryValue = 0x7F800000;
+        Representation<T,U > inf = Representation<T,U >{};
+        inf.binaryValue = infiniteValue;
         return sign ? inf.value : 0;
     }
 
-    bool exponentSign = remainingBits >> (positBits - 1);
+    bool exponentSign = remainingBits >> (totalRepresentationBits - 1);
     remainingBits <<= 1;
 
     int usedBits = 1;
     int regimeBits = 1;
 
-    while (remainingBits >> (positBits - 1) == exponentSign && regimeBits < (totalBits - 1) && regimeBits < positBits - 1) {
+    while (remainingBits >> (totalRepresentationBits - 1) == exponentSign && regimeBits < (totalBits - 1) && regimeBits < totalRepresentationBits - 1) {
         regimeBits++;
         remainingBits <<= 1;
     }
 
     int regime = exponentSign ? regimeBits - 1 : -regimeBits;
 
-    if (regimeBits != (totalBits - 1) || (regimeBits != positBits - 1)) {
+    if (regimeBits != (totalBits - 1) || (regimeBits != totalRepresentationBits - 1)) {
         remainingBits <<= 1;
         regimeBits++;
     }
 
     usedBits += regimeBits;
+    U exponent = 0;
     int bitsInExponent = 0;
-    uint32_t exponent = 0;
-    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits && (usedBits + bitsInExponent) < positBits) {
+    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits && (usedBits + bitsInExponent) < totalRepresentationBits) {
         exponent <<= 1;
-        exponent = exponent | (remainingBits >> (positBits - 1));
+        exponent = exponent | (remainingBits >> (totalRepresentationBits - 1));
         remainingBits <<= 1;
         bitsInExponent++;
     }
 
-    int doubleExponent = (int) pow(2, exponentBits);
-    doubleExponent = (doubleExponent * regime);
-    doubleExponent += exponent;
-    int exponentBitsForRepresentation = 9;
-    return getRepresentedNumber<float, uint32_t>(sign, remainingBits, doubleExponent, exponentBitsForRepresentation);
-}
+    int totalExponent = (int)pow(2, exponentBits);
+    totalExponent *= regime;
+    totalExponent += exponent;
 
-template <typename T,typename U>
-T Posit::getRepresentedNumber(bool sign, U remainingBits, int exponent, int exponentBitsForRepresentation){
     Representation<T,U> representation = Representation<T,U>{};
-    representation.value = (T)pow(2, exponent);
+    representation.value = (T)pow(2, totalExponent);
     remainingBits >>= exponentBitsForRepresentation;
     representation.binaryValue = representation.binaryValue | remainingBits;
     return sign ? -representation.value : representation.value;
