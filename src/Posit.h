@@ -7,7 +7,7 @@ private:
     int convertFloatToPosit(int8_t exponent, uint32_t fraction, bool isNegative) const;
 
     template<typename T, typename U>
-    T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation, U infiniteValue) const;
+    T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const;
 
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
@@ -16,4 +16,7 @@ public:
     uint64_t getBinaryFormat();
     double toDouble();
     float toFloat();
+
+    template<typename U>
+    U generateInfiniteValue(int totalBits, int exponentBits) const;
 };

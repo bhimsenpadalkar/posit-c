@@ -13,11 +13,6 @@ union Representation {
     U binaryValue;
 };
 
-union DoubleRep {
-    double value;
-    uint64_t binaryValue;
-};
-
 Posit::Posit(uint8_t totalBits, uint8_t exponentBits) {
     this->totalBits = totalBits;
     this->exponentBits = exponentBits;
@@ -101,15 +96,15 @@ void Posit::setPositValue(uint64_t posit) {
 }
 
 double Posit::toDouble() {
-    return getRepresentedNumber<double, uint64_t>( 64, 12,0x7FF0000000000000 );
+    return getRepresentedNumber<double, uint64_t>( 64, 11 );
 }
 
 float Posit::toFloat() {
-    return getRepresentedNumber<float, uint32_t>(32, 9,0x7F800000);
+    return getRepresentedNumber<float, uint32_t>(32, 8);
 }
 
 template <typename T,typename U> // T is the type either float or double and U is the type either uint32_t or uint64_t
-T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation, U infiniteValue) const {
+T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const     {
 
     uint64_t bitsOnLeftSide = this->binaryFormat << (64 - totalBits);
     U posit = bitsOnLeftSide >> (64 - totalRepresentationBits);
@@ -119,7 +114,7 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
 
     if(remainingBits == 0){
         Representation<T,U > inf = Representation<T,U >{};
-        inf.binaryValue = infiniteValue;
+        inf.binaryValue = generateInfiniteValue<U>(totalRepresentationBits,exponentBitsForRepresentation);
         return sign ? inf.value : 0;
     }
 
@@ -157,7 +152,25 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
 
     Representation<T,U> representation = Representation<T,U>{};
     representation.value = (T)pow(2, totalExponent);
-    remainingBits >>= exponentBitsForRepresentation;
+    remainingBits >>= exponentBitsForRepresentation + 1;
     representation.binaryValue = representation.binaryValue | remainingBits;
     return sign ? -representation.value : representation.value;
+}
+
+template<typename U>
+U Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
+    U binaryValue = 0x0;
+    U exponent = 0x0;
+    int count = 0;
+    while(count < totalBits - 1){
+        exponent <<= 1;
+        if(count < exponentBits){
+            exponent = exponent | 0x1;
+        }
+        binaryValue <<= 1;
+        binaryValue = binaryValue | 0x1;
+        count++;
+    }
+    binaryValue = binaryValue & exponent;
+    return binaryValue;
 }
