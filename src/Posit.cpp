@@ -7,13 +7,14 @@ using namespace std;
 
 #define IS_NEGATIVE(a) a < 0
 
-union FloatRep {
-    float floatValue;
-    uint32_t binaryValue;
+template <typename T,typename U>
+union Representation {
+    T value;
+    U binaryValue;
 };
 
 union DoubleRep {
-    double doubleValue;
+    double value;
     uint64_t binaryValue;
 };
 
@@ -23,8 +24,8 @@ Posit::Posit(uint8_t totalBits, uint8_t exponentBits) {
 }
 
 void Posit::setFloatValue(float value) {
-    FloatRep rep{};
-    rep.floatValue = value;
+    Representation<float,uint32_t > rep{};
+    rep.value = value;
 
     int floatExponentBits = 8;
     int floatSignBits = 1;
@@ -103,9 +104,9 @@ double Posit::toDouble() {
     uint64_t remainingBits = posit << 1;
 
     if(remainingBits == 0){
-        DoubleRep inf = DoubleRep{};
+        Representation<double,uint64_t> inf = Representation<double,uint64_t>{};
         inf.binaryValue = 0x7FF0000000000000;
-        return sign ?  inf.doubleValue : 0;
+        return sign ? inf.value : 0;
     }
 
     bool exponentSign = remainingBits >> (positBits - 1);
@@ -139,14 +140,9 @@ double Posit::toDouble() {
     int doubleExponent = (int) pow(2, exponentBits);
     doubleExponent = (doubleExponent * regime);
     doubleExponent += exponent;
+    int exponentBitsForRepresentation = 12;
 
-    DoubleRep doubleValue = DoubleRep{};
-    doubleValue.doubleValue = pow(2, doubleExponent);
-    remainingBits >>= 12;
-    doubleValue.binaryValue = doubleValue.binaryValue | remainingBits;
-    cout << -doubleValue.doubleValue << endl;
-    cout << sign << endl;
-    return sign ? -doubleValue.doubleValue : doubleValue.doubleValue;
+    return getRepresentedNumber<double, uint64_t>(sign, remainingBits, doubleExponent, exponentBitsForRepresentation);
 }
 
 void Posit::setPositValue(uint64_t posit) {
@@ -154,5 +150,59 @@ void Posit::setPositValue(uint64_t posit) {
 }
 
 float Posit::toFloat() {
-    return 0;
+    int positBits = 32;
+    uint64_t bitsOnLeftSide = this->binaryFormat << (64 - totalBits);
+    uint32_t posit = bitsOnLeftSide >> (64 - positBits);
+    bool sign = posit >> (positBits - 1);
+    posit = sign ? -posit : posit;
+    uint32_t remainingBits = posit << 1;
+
+    if(remainingBits == 0){
+        Representation<float,uint32_t > inf = Representation<float,uint32_t >{};
+        inf.binaryValue = 0x7F800000;
+        return sign ? inf.value : 0;
+    }
+
+    bool exponentSign = remainingBits >> (positBits - 1);
+    remainingBits <<= 1;
+
+    int usedBits = 1;
+    int regimeBits = 1;
+
+    while (remainingBits >> (positBits - 1) == exponentSign && regimeBits < (totalBits - 1) && regimeBits < positBits - 1) {
+        regimeBits++;
+        remainingBits <<= 1;
+    }
+
+    int regime = exponentSign ? regimeBits - 1 : -regimeBits;
+
+    if (regimeBits != (totalBits - 1) || (regimeBits != positBits - 1)) {
+        remainingBits <<= 1;
+        regimeBits++;
+    }
+
+    usedBits += regimeBits;
+    int bitsInExponent = 0;
+    uint32_t exponent = 0;
+    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits && (usedBits + bitsInExponent) < positBits) {
+        exponent <<= 1;
+        exponent = exponent | (remainingBits >> (positBits - 1));
+        remainingBits <<= 1;
+        bitsInExponent++;
+    }
+
+    int doubleExponent = (int) pow(2, exponentBits);
+    doubleExponent = (doubleExponent * regime);
+    doubleExponent += exponent;
+    int exponentBitsForRepresentation = 9;
+    return getRepresentedNumber<float, uint32_t>(sign, remainingBits, doubleExponent, exponentBitsForRepresentation);
+}
+
+template <typename T,typename U>
+T Posit::getRepresentedNumber(bool sign, U remainingBits, int exponent, int exponentBitsForRepresentation){
+    Representation<T,U> representation = Representation<T,U>{};
+    representation.value = (T)pow(2, exponent);
+    remainingBits >>= exponentBitsForRepresentation;
+    representation.binaryValue = representation.binaryValue | remainingBits;
+    return sign ? -representation.value : representation.value;
 }
