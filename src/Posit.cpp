@@ -102,9 +102,14 @@ double Posit::toDouble() {
     posit = sign ? -posit : posit;
     uint64_t remainingBits = posit << 1;
 
+    if(remainingBits == 0){
+        DoubleRep inf = DoubleRep{};
+        inf.binaryValue = 0x7FF0000000000000;
+        return sign ?  inf.doubleValue : 0;
+    }
+
     bool exponentSign = remainingBits >> (positBits - 1);
     remainingBits <<= 1;
-
 
     int usedBits = 1;
     int regimeBits = 1;
@@ -131,18 +136,19 @@ double Posit::toDouble() {
         bitsInExponent++;
     }
 
-    int doubleExponent = (int)pow(2,exponentBits);
+    int doubleExponent = (int) pow(2, exponentBits);
     doubleExponent = (doubleExponent * regime);
     doubleExponent += exponent;
 
     DoubleRep doubleValue = DoubleRep{};
-    doubleValue.doubleValue = pow(2,doubleExponent);
+    doubleValue.doubleValue = pow(2, doubleExponent);
     remainingBits >>= 12;
     doubleValue.binaryValue = doubleValue.binaryValue | remainingBits;
+    cout << -doubleValue.doubleValue << endl;
+    cout << sign << endl;
     return sign ? -doubleValue.doubleValue : doubleValue.doubleValue;
 }
 
 void Posit::setPositValue(uint64_t posit) {
     this->binaryFormat = posit;
-    cout << this->binaryFormat << endl;
 }
