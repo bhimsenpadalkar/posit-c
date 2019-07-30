@@ -83,9 +83,9 @@ int main() {
     shouldConvertNegativeFloatToPositWithExponent();
     shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore();
 
-    shouldNotHavingExponentWhileTheRegimeBitsAreMore(); // changed (added 58,61)
-    shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(); //problem not fixed more regime bits
-    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore(); //problem not fixed more exponent bits
+    shouldNotHavingExponentWhileTheRegimeBitsAreMore();
+    shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1();
+    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore();
     shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1();
     return 0;
 }

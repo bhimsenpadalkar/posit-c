@@ -12,4 +12,5 @@ public:
     void setPositValue(uint64_t posit);
     uint64_t getBinaryFormat();
     double toDouble();
+    float toFloat();
 };

@@ -1,5 +1,4 @@
 #include<iostream>
-#include <limits>
 #include "../src/Posit.h"
 using namespace std;
 
@@ -11,49 +10,11 @@ Posit* createPosit(uint8_t totalBits,uint8_t exponentBits, uint64_t positValue){
     return num;
 }
 
-void shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits(){
-    Posit *num = createPosit(8, 0, 0x20);
-    ASSERT(num->toDouble(), 0.5);
+void shouldReturnZeroForTheNumberZeroAsAPosit(){
+    Posit *num = createPosit(8, 0, 0x00);
+    ASSERT(num->toFloat(),0);
 }
-
-void shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits(){
-    Posit *num = createPosit(8, 0, 0xE0);
-    ASSERT(num->toDouble(), -0.5);
-}
-
-void shouldConvertPositivePositValueIntoDouble(){
-    Posit *num = createPosit(16, 1, 0x770E);
-    ASSERT(num->toDouble(), 56.4375);
-}
-
-void shouldConvertNegativePositValueIntoDouble(){
-    Posit *num = createPosit(16, 1, 0xAA00);
-    ASSERT(num->toDouble(), -2.75);
-}
-
-void shouldGiveZeroRepresentationOfPositToDouble(){
-    Posit *num = createPosit(8,0,0x00);
-    ASSERT(num->toDouble(),0);
-}
-
-void shouldGiveInfiniteRepresentationOfPositToDouble(){
-    Posit *num = createPosit(8,0,0x80);
-
-    union DoubleRep {
-        double doubleValue;
-        uint64_t binaryValue;
-    };
-    DoubleRep inf = DoubleRep{};
-    inf.doubleValue = num->toDouble();
-    ASSERT(inf.binaryValue,0x7FF0000000000000);
-}
-
 int main(){
-    shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits();
-    shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits();
-    shouldConvertPositivePositValueIntoDouble();
-    shouldConvertNegativePositValueIntoDouble();
-    shouldGiveZeroRepresentationOfPositToDouble();
-    shouldGiveInfiniteRepresentationOfPositToDouble();
+    shouldReturnZeroForTheNumberZeroAsAPosit();
     return 0;
 }

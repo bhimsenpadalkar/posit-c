@@ -152,3 +152,7 @@ double Posit::toDouble() {
 void Posit::setPositValue(uint64_t posit) {
     this->binaryFormat = posit;
 }
+
+float Posit::toFloat() {
+    return 0;
+}
