@@ -226,12 +226,23 @@ FloatFields Posit::extractFields() {
         bitsInExponent++;
     }
 
-    double finalExponent = pow(2, exponentBits);
+    long int finalExponent = getRegimeExponent();
     finalExponent *= regime;
     finalExponent += exponent;
     floatFields.sign = sign;
     floatFields.exponent = finalExponent;
+    floatFields.fraction = positBits;
     return floatFields;
+}
+
+long int Posit::getRegimeExponent(){
+    uint8_t exponentBits = this->exponentBits;
+    long int exponent = 1;
+    while(exponentBits > 0){
+        exponent <<= 1;
+        exponentBits--;
+    }
+    return exponent;
 }
 
 int Posit::calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const {

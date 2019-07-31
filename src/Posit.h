@@ -27,6 +27,8 @@ private:
     template<typename T>
     T extractExponent(int totalRepresentationBits, int usedBits, int bitsInExponent, T &remainingBits) const;
 
+    long getRegimeExponent();
+
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 

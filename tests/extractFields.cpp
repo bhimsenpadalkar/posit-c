@@ -45,10 +45,19 @@ void shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThere
     verifyFloatFields(expectedFields, actualFields);
 }
 
-
 void shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThereAndExponentHaveSomeValue(){
     Posit *num = Utils::createPositByUint(8,2,0x64);
     FloatFields expectedFields = FloatFields{false, 5, 0x0};
+    FloatFields actualFields = num->extractFields();
+    verifyFloatFields(expectedFields, actualFields);
+}
+
+
+void shouldReturnTheFloatFieldsOfPositRepresentationForThree(){
+    Posit *num = Utils::createPositByUint(8,2,0x66);
+    uint64_t fraction = 1;
+    fraction <<= 63;
+    FloatFields expectedFields = FloatFields{false, 5, fraction };
     FloatFields actualFields = num->extractFields();
     verifyFloatFields(expectedFields, actualFields);
 }
@@ -60,5 +69,6 @@ int main(){
     shouldReturnTheFloatFieldsOfPositRepresentationForNegativeTwo();
     shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThere();
     shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThereAndExponentHaveSomeValue();
+    shouldReturnTheFloatFieldsOfPositRepresentationForThree();
     return 0;
 }
