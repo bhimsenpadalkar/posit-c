@@ -38,10 +38,27 @@ void shouldReturnTheFloatFieldsOfPositRepresentationForNegativeTwo(){
     verifyFloatFields(expectedFields, actualFields);
 }
 
+void shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThere(){
+    Posit *num = Utils::createPositByUint(8,2,0x60);
+    FloatFields expectedFields = FloatFields{false, 4, 0x0};
+    FloatFields actualFields = num->extractFields();
+    verifyFloatFields(expectedFields, actualFields);
+}
+
+
+void shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThereAndExponentHaveSomeValue(){
+    Posit *num = Utils::createPositByUint(8,2,0x64);
+    FloatFields expectedFields = FloatFields{false, 5, 0x0};
+    FloatFields actualFields = num->extractFields();
+    verifyFloatFields(expectedFields, actualFields);
+}
+
 int main(){
     shouldReturnTheFloatFieldsOfPositRepresentationForZero();
     shouldReturnTheFloatFieldsOfPositRepresentationForInfinity();
     shouldReturnTheFloatFieldsOfPositRepresentationForTwo();
     shouldReturnTheFloatFieldsOfPositRepresentationForNegativeTwo();
+    shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThere();
+    shouldReturnTheFloatFieldsOfPositRepresentationForTwoWhenRegimeBitsAreThereAndExponentHaveSomeValue();
     return 0;
 }
