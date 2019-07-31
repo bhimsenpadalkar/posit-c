@@ -7,6 +7,7 @@
 using namespace std;
 
 #define IS_NEGATIVE(a) a < 0
+const int TOTAL_POSIT_BITS = 64;
 
 template<typename T, typename U>
 union Representation {
@@ -192,10 +193,52 @@ T Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
     return binaryValue;
 }
 
-FloatFields Posit::extractFields(){
-    const int POSIT_BITS = 64;
+FloatFields Posit::extractFields() {
     FloatFields floatFields = FloatFields{false, 0, 0};
-    uint64_t positNumber = this->binaryFormat << (POSIT_BITS - totalBits);
-    floatFields.sign = positNumber >> (POSIT_BITS - 1);
+    uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
+    positBits <<= 1;
+
+    if(positBits == 0){
+        if(sign){
+            floatFields.sign = true;
+        }
+        return floatFields;
+    }
+    int usedBits = 1;
+    bool regimeSign = positBits >> (TOTAL_POSIT_BITS - usedBits);
+    positBits <<= 1;
+    int regimeBits = 1 + calculateRegimeBits(positBits, regimeSign);
+    positBits <<= regimeBits - 1;
+    int regime = regimeSign ? regimeBits - 1 : -regimeBits;
+    if (regimeBits != (totalBits - 1)) {
+        positBits <<= 1;
+        regimeBits++;
+    }
+    usedBits += regimeBits;
+    int bitsInExponent = 0;
+    long int exponent = 0;
+    while((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits){
+        exponent *= 2;
+        exponent = exponent | (positBits >> (TOTAL_POSIT_BITS - 1));
+        positBits <<= 1;
+        bitsInExponent++;
+    }
+
+    double finalExponent = pow(2, exponentBits);
+    finalExponent *= regime;
+    finalExponent += exponent;
+    floatFields.sign = sign;
+    floatFields.exponent = finalExponent;
     return floatFields;
+}
+
+int Posit::calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const {
+    int regimeBits = 0;
+    while (remainingBits >> (TOTAL_POSIT_BITS - 1) == regimeSign &&
+           regimeBits <= (totalBits - 2)) { // 2 bits because one is sign bit and one is regime sign bit
+        regimeBits++;
+        remainingBits <<= 1;
+    }
+    return regimeBits;
 }

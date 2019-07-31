@@ -16,6 +16,8 @@ private:
     template<typename T>
     int calculateRegimeBits(T remainingBits, int totalRepresentationBits, int exponentSign) const;
 
+    int calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const;
+
     template<typename T, typename U>
     T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const;
 
