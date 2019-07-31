@@ -22,14 +22,6 @@ add_executable(test_posit_float
         ./Utils.cpp
         )
 
-add_executable(test_posit_extraction
-        extractFields.cpp
-        ../src/Posit.cpp
-        ../src/Posit.h
-        ./Utils.h
-        ./Utils.cpp
-        )
-
 add_test(
         creatingPositByFloat test_posit
 )
@@ -40,8 +32,4 @@ add_test(
 
 add_test(
         creatingFloatByPosit test_posit_float
-)
-
-add_test(
-        extractFields test_posit_extraction
 )

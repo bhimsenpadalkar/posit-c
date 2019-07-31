@@ -19,13 +19,16 @@ private:
     int calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const;
 
     template<typename T, typename U>
-    T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation, U infiniteValue) const;
+    T getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentBitsForRepresentation, U infiniteValue) const;
 
     template<typename T>
     T extractExponent(int totalRepresentationBits, int usedBits, int bitsInExponent, T &remainingBits) const;
 
     long getRegimeExponent();
 
+    FloatFields extractFields(bool sign,uint64_t positBits) const;
+
+    static long int calculatePowerOfTwo(uint8_t power);
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 
@@ -40,6 +43,4 @@ public:
     float toFloat();
 
     int calculateRegime(bool regimeSign, int regimeBits) const;
-
-    FloatFields extractFields();
 };

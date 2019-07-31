@@ -3,12 +3,12 @@
 #include "Utils.h"
 using namespace std;
 
-void shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits() {
+void shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits() {
     Posit *num = Utils::createPositByUint(8, 0, 0x20);
     ASSERT(num->toDouble(), 0.5);
 }
 
-void shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits() {
+void shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits() {
     Posit *num = Utils::createPositByUint(8, 0, 0xE0);
     ASSERT(num->toDouble(), -0.5);
 }
@@ -41,8 +41,8 @@ void shouldGiveInfiniteRepresentationOfPositToDouble() {
 }
 
 int main() {
-    shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits();
-    shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits();
+    shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits();
+    shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits();
     shouldConvertPositivePositValueIntoDouble();
     shouldConvertNegativePositValueIntoDouble();
     shouldGiveZeroRepresentationOfPositToDouble();
