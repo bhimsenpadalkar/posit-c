@@ -1,6 +1,6 @@
 #include <cstdint>
 #include "Posit.h"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 using namespace std;
@@ -16,12 +16,12 @@ union Representation {
 Posit::Posit(uint8_t totalBits, uint8_t exponentBits) {
     this->totalBits = totalBits;
     this->exponentBits = exponentBits;
+    this->binaryFormat = 0;
 }
 
 void Posit::setFloatValue(float value) {
     Representation<float,uint32_t > rep{};
     rep.value = value;
-
     int floatExponentBits = 8;
     int floatSignBits = 1;
     int totalFloatBits = 32;
@@ -149,7 +149,6 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
     int totalExponent = (int)pow(2, exponentBits);
     totalExponent *= regime;
     totalExponent += exponent;
-
     Representation<T,U> representation = Representation<T,U>{};
     representation.value = (T)pow(2, totalExponent);
     remainingBits >>= exponentBitsForRepresentation + 1;
@@ -157,10 +156,10 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
     return sign ? -representation.value : representation.value;
 }
 
-template<typename U>
-U Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
-    U binaryValue = 0x0;
-    U exponent = 0x0;
+template<typename T>
+T Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
+    T binaryValue = 0x0;
+    T exponent = 0x0;
     int count = 0;
     while(count < totalBits - 1){
         exponent <<= 1;
