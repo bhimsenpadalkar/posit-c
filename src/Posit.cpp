@@ -123,12 +123,8 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
 
     int usedBits = 1;
     int regimeBits = 1;
-
-    while (remainingBits >> (totalRepresentationBits - 1) == exponentSign && regimeBits < (totalBits - 1) && regimeBits < totalRepresentationBits - 1) {
-        regimeBits++;
-        remainingBits <<= 1;
-    }
-
+    regimeBits += calculateRegimeBits(remainingBits,totalRepresentationBits,exponentSign);
+    remainingBits <<= regimeBits - 1;
     int regime = exponentSign ? regimeBits - 1 : -regimeBits;
 
     if (regimeBits != (totalBits - 1) || (regimeBits != totalRepresentationBits - 1)) {
@@ -154,6 +150,16 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
     remainingBits >>= exponentBitsForRepresentation + 1;
     representation.binaryValue = representation.binaryValue | remainingBits;
     return sign ? -representation.value : representation.value;
+}
+
+template<typename T>
+int Posit::calculateRegimeBits(T remainingBits, int totalRepresentationBits, int exponentSign) const {
+    int regimeBits = 0;
+    while (remainingBits >> (totalRepresentationBits - 1) == exponentSign && regimeBits < (totalBits - 1) && regimeBits < totalRepresentationBits - 1) {
+        regimeBits++;
+        remainingBits <<= 1;
+    }
+    return regimeBits;
 }
 
 template<typename T>

@@ -33,9 +33,35 @@ void shouldReturnOneForThePositNumberOne(){
     ASSERT(num->toFloat(),1);
 }
 
+
+void shouldConvertPositivePositValueIntoFloat(){
+    Posit *num = createPosit(16, 1, 0x770E);
+    ASSERT(num->toFloat(), 56.4375);
+}
+
+void shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits(){
+    Posit *num = createPosit(8, 0, 0x20);
+    ASSERT(num->toDouble(), 0.5);
+}
+
+void shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits(){
+    Posit *num = createPosit(8, 0, 0xE0);
+    ASSERT(num->toDouble(), -0.5);
+}
+
+
+void shouldConvertNegativePositValueIntoFloat(){
+    Posit *num = createPosit(16, 1, 0xAA00);
+    ASSERT(num->toDouble(), -2.75);
+}
+
 int main(){
     shouldReturnZeroForTheNumberZeroAsAPosit();
     shouldReturnInfiniteForTheNumberInfiniteAsAPosit();
     shouldReturnOneForThePositNumberOne();
+    shouldConvertPositivePositValueIntoFloat();
+    shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits();
+    shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits();
+    shouldConvertNegativePositValueIntoFloat();
     return 0;
 }

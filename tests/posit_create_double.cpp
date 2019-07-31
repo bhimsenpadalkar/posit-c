@@ -11,12 +11,12 @@ Posit* createPosit(uint8_t totalBits,uint8_t exponentBits, uint64_t positValue){
     return num;
 }
 
-void shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits(){
+void shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits(){
     Posit *num = createPosit(8, 0, 0x20);
     ASSERT(num->toDouble(), 0.5);
 }
 
-void shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits(){
+void shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits(){
     Posit *num = createPosit(8, 0, 0xE0);
     ASSERT(num->toDouble(), -0.5);
 }
@@ -49,8 +49,8 @@ void shouldGiveInfiniteRepresentationOfPositToDouble(){
 }
 
 int main(){
-    shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits();
-    shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits();
+    shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits();
+    shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits();
     shouldConvertPositivePositValueIntoDouble();
     shouldConvertNegativePositValueIntoDouble();
     shouldGiveZeroRepresentationOfPositToDouble();

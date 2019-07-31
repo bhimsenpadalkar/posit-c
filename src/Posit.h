@@ -6,6 +6,9 @@ private:
     uint64_t binaryFormat;
     int convertFloatToPosit(int8_t exponent, uint32_t fraction, bool isNegative) const;
 
+    template <typename T>
+    int calculateRegimeBits(T remainingBits, int totalRepresentationBits, int exponentSign) const;
+
     template<typename T, typename U>
     T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const;
 
