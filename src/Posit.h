@@ -1,3 +1,9 @@
+struct FloatFields {
+    bool sign;
+    long int exponent;
+    uint64_t fraction;
+};
+
 class Posit {
 
 private:
@@ -34,4 +40,5 @@ public:
 
     int calculateRegime(bool regimeSign, int regimeBits) const;
 
+    FloatFields extractFields();
 };

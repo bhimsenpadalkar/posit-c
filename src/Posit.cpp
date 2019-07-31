@@ -191,3 +191,11 @@ T Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
     binaryValue = binaryValue & exponent;
     return binaryValue;
 }
+
+FloatFields Posit::extractFields(){
+    const int POSIT_BITS = 64;
+    FloatFields floatFields = FloatFields{false, 0, 0};
+    uint64_t positNumber = this->binaryFormat << (POSIT_BITS - totalBits);
+    floatFields.sign = positNumber >> (POSIT_BITS - 1);
+    return floatFields;
+}
