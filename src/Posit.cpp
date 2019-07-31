@@ -98,16 +98,16 @@ void Posit::setPositValue(uint64_t posit) {
 }
 
 double Posit::toDouble() {
-    return getRepresentedNumber<double, uint64_t>(64, 11);
+    return getRepresentedNumber<double, uint64_t>(64, 11, 0x7FF0000000000000);
 }
 
 float Posit::toFloat() {
-    return getRepresentedNumber<float, uint32_t>(32, 8);
+    return getRepresentedNumber<float, uint32_t>(32, 8,0x7F800000);
 }
 
 template<typename T, typename U>
 // T is the type either float or double and U is the type either uint32_t or uint64_t
-T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const {
+T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation, U infiniteValue) const {
 
     uint64_t bitsOnLeftSide = this->binaryFormat << (64 - totalBits);
     U posit = bitsOnLeftSide >> (64 - totalRepresentationBits);
@@ -117,7 +117,7 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
 
     if (remainingBits == 0) {
         Representation<T, U> inf = Representation<T, U>{};
-        inf.binaryValue = generateInfiniteValue<U>(totalRepresentationBits, exponentBitsForRepresentation);
+        inf.binaryValue = infiniteValue;
         return sign ? inf.value : 0;
     }
 
@@ -175,24 +175,6 @@ int Posit::calculateRegimeBits(T remainingBits, int totalRepresentationBits, int
     return regimeBits;
 }
 
-template<typename T>
-T Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
-    T binaryValue = 0x0;
-    T exponent = 0x0;
-    int count = 0;
-    while (count < totalBits - 1) {
-        exponent <<= 1;
-        if (count < exponentBits) {
-            exponent = exponent | 0x1;
-        }
-        binaryValue <<= 1;
-        binaryValue = binaryValue | 0x1;
-        count++;
-    }
-    binaryValue = binaryValue & exponent;
-    return binaryValue;
-}
-
 FloatFields Posit::extractFields() {
     FloatFields floatFields = FloatFields{false, 0, 0};
     uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
@@ -200,8 +182,8 @@ FloatFields Posit::extractFields() {
     positBits = sign ? -positBits : positBits;
     positBits <<= 1;
 
-    if(positBits == 0){
-        if(sign){
+    if (positBits == 0) {
+        if (sign) {
             floatFields.sign = true;
         }
         return floatFields;
@@ -219,7 +201,7 @@ FloatFields Posit::extractFields() {
     usedBits += regimeBits;
     int bitsInExponent = 0;
     long int exponent = 0;
-    while((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits){
+    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits) {
         exponent *= 2;
         exponent = exponent | (positBits >> (TOTAL_POSIT_BITS - 1));
         positBits <<= 1;
@@ -235,10 +217,10 @@ FloatFields Posit::extractFields() {
     return floatFields;
 }
 
-long int Posit::getRegimeExponent(){
+long int Posit::getRegimeExponent() {
     uint8_t exponentBits = this->exponentBits;
     long int exponent = 1;
-    while(exponentBits > 0){
+    while (exponentBits > 0) {
         exponent <<= 1;
         exponentBits--;
     }

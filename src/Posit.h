@@ -19,10 +19,7 @@ private:
     int calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const;
 
     template<typename T, typename U>
-    T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const;
-
-    template<typename T>
-    T generateInfiniteValue(int totalBits, int exponentBits) const;
+    T getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation, U infiniteValue) const;
 
     template<typename T>
     T extractExponent(int totalRepresentationBits, int usedBits, int bitsInExponent, T &remainingBits) const;
