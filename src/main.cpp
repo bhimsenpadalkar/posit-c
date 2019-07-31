@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     cout << "Hello";
-    Posit *num = new Posit(8,0);
+    Posit *num = new Posit(8, 0);
 
     return 0;
 }

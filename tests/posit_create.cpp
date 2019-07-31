@@ -1,48 +1,49 @@
 #include<iostream>
 #include "../src/Posit.h"
+
 using namespace std;
 
-#define ASSERT(a,b) if(a != b) throw std::runtime_error("Failed")
+#define ASSERT(a, b) if(a != b) throw std::runtime_error("Failed")
 
-Posit* createPosit(uint8_t totalBits,uint8_t exponentBits, float value){
-    Posit *num = new Posit(totalBits,exponentBits);
-    num -> setFloatValue(value);
+Posit *createPosit(uint8_t totalBits, uint8_t exponentBits, float value) {
+    Posit *num = new Posit(totalBits, exponentBits);
+    num->setFloatValue(value);
 
     return num;
 }
 
-void shouldConvertFloatToPositWithLessPrecision_8(){
+void shouldConvertFloatToPositWithLessPrecision_8() {
     Posit *num = createPosit(8, 0, 4.625);
 
     ASSERT(num->getBinaryFormat(), 0x71);
 }
 
-void shouldConvertFloatToPositWithLessPrecision_10(){
+void shouldConvertFloatToPositWithLessPrecision_10() {
     Posit *num = createPosit(10, 0, 4.625);
 
     ASSERT(num->getBinaryFormat(), 0x1C5);
 }
 
-void shouldConvertFloatToPositWithExponent(){
+void shouldConvertFloatToPositWithExponent() {
     Posit *num = createPosit(8, 2, 0.009765625);
 
     ASSERT(num->getBinaryFormat(), 0x15);
 }
 
-void shouldConvertNegativeFloatToPositWithExponent(){
+void shouldConvertNegativeFloatToPositWithExponent() {
     Posit *num = createPosit(8, 2, -0.009765625);
-    
+
     ASSERT(num->getBinaryFormat(), -0x15);
 }
 
-void shouldNotHavingExponentWhileTheRegimeBitsAreMore(){
+void shouldNotHavingExponentWhileTheRegimeBitsAreMore() {
     Posit *num = createPosit(8, 1, 2048.2);
 
     ASSERT(num->getBinaryFormat(), 0x7E);
 }
 
-void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore(){
-    Posit *num = createPosit(8,1,512.9);
+void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore() {
+    Posit *num = createPosit(8, 1, 512.9);
 
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
@@ -57,21 +58,21 @@ void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore(){
  * https://www.johndcook.com/blog/2018/04/11/anatomy-of-a-posit-number/
  */
 
-void shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1(){
-    Posit *num = createPosit(8,1,4096);
+void shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1() {
+    Posit *num = createPosit(8, 1, 4096);
 
     ASSERT(num->getBinaryFormat(), 0x7F);
 }
 
 
 void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore() {
-    Posit *num = createPosit(8,2,262144.3);
+    Posit *num = createPosit(8, 2, 262144.3);
 
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
 
 void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1() {
-    Posit *num = createPosit(8,3,302365697638.4);
+    Posit *num = createPosit(8, 3, 302365697638.4);
 
     ASSERT(num->getBinaryFormat(), 0x7D);
 }

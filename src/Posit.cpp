@@ -2,12 +2,13 @@
 #include "Posit.h"
 #include <cmath>
 #include <iostream>
+#include <type_traits>
 
 using namespace std;
 
 #define IS_NEGATIVE(a) a < 0
 
-template <typename T,typename U>
+template<typename T, typename U>
 union Representation {
     T value;
     U binaryValue;
@@ -20,7 +21,7 @@ Posit::Posit(uint8_t totalBits, uint8_t exponentBits) {
 }
 
 void Posit::setFloatValue(float value) {
-    Representation<float,uint32_t > rep{};
+    Representation<float, uint32_t> rep{};
     rep.value = value;
     int floatExponentBits = 8;
     int floatSignBits = 1;
@@ -96,15 +97,16 @@ void Posit::setPositValue(uint64_t posit) {
 }
 
 double Posit::toDouble() {
-    return getRepresentedNumber<double, uint64_t>( 64, 11 );
+    return getRepresentedNumber<double, uint64_t>(64, 11);
 }
 
 float Posit::toFloat() {
     return getRepresentedNumber<float, uint32_t>(32, 8);
 }
 
-template <typename T,typename U> // T is the type either float or double and U is the type either uint32_t or uint64_t
-T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const     {
+template<typename T, typename U>
+// T is the type either float or double and U is the type either uint32_t or uint64_t
+T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRepresentation) const {
 
     uint64_t bitsOnLeftSide = this->binaryFormat << (64 - totalBits);
     U posit = bitsOnLeftSide >> (64 - totalRepresentationBits);
@@ -112,20 +114,20 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
     posit = sign ? -posit : posit;
     U remainingBits = posit << 1;
 
-    if(remainingBits == 0){
-        Representation<T,U > inf = Representation<T,U >{};
-        inf.binaryValue = generateInfiniteValue<U>(totalRepresentationBits,exponentBitsForRepresentation);
+    if (remainingBits == 0) {
+        Representation<T, U> inf = Representation<T, U>{};
+        inf.binaryValue = generateInfiniteValue<U>(totalRepresentationBits, exponentBitsForRepresentation);
         return sign ? inf.value : 0;
     }
 
-    bool exponentSign = remainingBits >> (totalRepresentationBits - 1);
+    bool regimeSign = remainingBits >> (totalRepresentationBits - 1);
     remainingBits <<= 1;
 
     int usedBits = 1;
     int regimeBits = 1;
-    regimeBits += calculateRegimeBits(remainingBits,totalRepresentationBits,exponentSign);
+    regimeBits += calculateRegimeBits(remainingBits, totalRepresentationBits, regimeSign);
     remainingBits <<= regimeBits - 1;
-    int regime = exponentSign ? regimeBits - 1 : -regimeBits;
+    int regime = calculateRegime(regimeSign, regimeBits);
 
     if (regimeBits != (totalBits - 1) || (regimeBits != totalRepresentationBits - 1)) {
         remainingBits <<= 1;
@@ -133,29 +135,39 @@ T Posit::getRepresentedNumber(int totalRepresentationBits, int exponentBitsForRe
     }
 
     usedBits += regimeBits;
-    U exponent = 0;
     int bitsInExponent = 0;
-    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits && (usedBits + bitsInExponent) < totalRepresentationBits) {
-        exponent <<= 1;
-        exponent = exponent | (remainingBits >> (totalRepresentationBits - 1));
-        remainingBits <<= 1;
-        bitsInExponent++;
-    }
+    U exponent = extractExponent<U>(totalRepresentationBits, usedBits, bitsInExponent, remainingBits);
 
-    int totalExponent = (int)pow(2, exponentBits);
+    int totalExponent = (int) pow(2, exponentBits);
     totalExponent *= regime;
     totalExponent += exponent;
-    Representation<T,U> representation = Representation<T,U>{};
-    representation.value = (T)pow(2, totalExponent);
+    Representation<T, U> representation = Representation<T, U>{};
+    representation.value = (T) pow(2, totalExponent);
     remainingBits >>= exponentBitsForRepresentation + 1;
     representation.binaryValue = representation.binaryValue | remainingBits;
     return sign ? -representation.value : representation.value;
 }
 
 template<typename T>
+T Posit::extractExponent(int totalRepresentationBits, int usedBits, int bitsInExponent, T &remainingBits) const {
+    T exponent = 0;
+    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits &&
+           (usedBits + bitsInExponent) < totalRepresentationBits) {
+        exponent <<= 1;
+        exponent = exponent | (remainingBits >> (totalRepresentationBits - 1));
+        remainingBits <<= 1;
+        bitsInExponent++;
+    }
+    return exponent;
+}
+
+int Posit::calculateRegime(bool regimeSign, int regimeBits) const { return regimeSign ? regimeBits - 1 : -regimeBits; }
+
+template<typename T>
 int Posit::calculateRegimeBits(T remainingBits, int totalRepresentationBits, int exponentSign) const {
     int regimeBits = 0;
-    while (remainingBits >> (totalRepresentationBits - 1) == exponentSign && regimeBits < (totalBits - 1) && regimeBits < totalRepresentationBits - 1) {
+    while (remainingBits >> (totalRepresentationBits - 1) == exponentSign && regimeBits < (totalBits - 1) &&
+           regimeBits < totalRepresentationBits - 1) {
         regimeBits++;
         remainingBits <<= 1;
     }
@@ -167,9 +179,9 @@ T Posit::generateInfiniteValue(int totalBits, int exponentBits) const {
     T binaryValue = 0x0;
     T exponent = 0x0;
     int count = 0;
-    while(count < totalBits - 1){
+    while (count < totalBits - 1) {
         exponent <<= 1;
-        if(count < exponentBits){
+        if (count < exponentBits) {
             exponent = exponent | 0x1;
         }
         binaryValue <<= 1;
