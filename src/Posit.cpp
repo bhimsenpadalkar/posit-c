@@ -197,6 +197,7 @@ FloatFields Posit::extractFields() {
     FloatFields floatFields = FloatFields{false, 0, 0};
     uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
     bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
+    positBits = sign ? -positBits : positBits;
     positBits <<= 1;
 
     if(positBits == 0){

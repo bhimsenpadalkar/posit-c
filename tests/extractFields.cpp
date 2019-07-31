@@ -24,10 +24,16 @@ void shouldReturnTheFloatFieldsOfPositRepresentationForInfinity(){
     verifyFloatFields(expectedFields, actualFields);
 }
 
-
 void shouldReturnTheFloatFieldsOfPositRepresentationForTwo(){
     Posit *num = Utils::createPositByUint(8,2,0x48);
     FloatFields expectedFields = FloatFields{false, 1, 0x0};
+    FloatFields actualFields = num->extractFields();
+    verifyFloatFields(expectedFields, actualFields);
+}
+
+void shouldReturnTheFloatFieldsOfPositRepresentationForNegativeTwo(){
+    Posit *num = Utils::createPositByUint(8,2,0xB8);
+    FloatFields expectedFields = FloatFields{true, 1, 0x0};
     FloatFields actualFields = num->extractFields();
     verifyFloatFields(expectedFields, actualFields);
 }
@@ -36,5 +42,6 @@ int main(){
     shouldReturnTheFloatFieldsOfPositRepresentationForZero();
     shouldReturnTheFloatFieldsOfPositRepresentationForInfinity();
     shouldReturnTheFloatFieldsOfPositRepresentationForTwo();
+    shouldReturnTheFloatFieldsOfPositRepresentationForNegativeTwo();
     return 0;
 }
