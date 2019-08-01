@@ -13,22 +13,16 @@ private:
 
     int convertFloatToPosit(int8_t exponent, uint32_t fraction, bool isNegative) const;
 
-    template<typename T>
-    int calculateRegimeBits(T remainingBits, int totalRepresentationBits, int exponentSign) const;
-
     int calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const;
 
     template<typename T, typename U>
-    T getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentBitsForRepresentation, U infiniteValue) const;
+    T
+    getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentBitsForRepresentation, U infiniteValue) const;
 
-    template<typename T>
-    T extractExponent(int totalRepresentationBits, int usedBits, int bitsInExponent, T &remainingBits) const;
-
-    long getRegimeExponent();
-
-    FloatFields extractFields(bool sign,uint64_t positBits) const;
+    FloatFields extractFields(bool sign, uint64_t positBits) const;
 
     static long int calculatePowerOfTwo(uint8_t power);
+
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 
@@ -41,6 +35,4 @@ public:
     double toDouble();
 
     float toFloat();
-
-    int calculateRegime(bool regimeSign, int regimeBits) const;
 };

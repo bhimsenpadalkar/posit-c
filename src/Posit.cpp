@@ -102,14 +102,15 @@ double Posit::toDouble() {
 }
 
 float Posit::toFloat() {
-    return getRepresentedNumber<float, uint32_t>(32, 8,0x7F800000);
+    return getRepresentedNumber<float, uint32_t>(32, 8, 0x7F800000);
 }
 
 template<typename T, typename U>
 // T is the type either float or double and U is the type either uint32_t or uint64_t
-T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentBitsForRepresentation, U infiniteValue) const {
+T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentBitsForRepresentation,
+                              U infiniteValue) const {
 
-    uint64_t positBits = this-> binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
     bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
     positBits = sign ? -positBits : positBits;
     positBits <<= 1;
@@ -120,13 +121,13 @@ T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentB
     }
     const FloatFields &floatFields = extractFields(sign, positBits);
     const long int maxExponentOfFloat = calculatePowerOfTwo(exponentBitsForRepresentation - 1);
-    if(floatFields.exponent > maxExponentOfFloat - 1 ){
+    if (floatFields.exponent > maxExponentOfFloat - 1) {
         return sign ? -inf.value : inf.value;
-    } else if(floatFields.exponent <= -maxExponentOfFloat){
+    } else if (floatFields.exponent <= -maxExponentOfFloat) {
         return sign ? -0 : 0;
     }
 
-    uint64_t exponent =  floatFields.exponent + maxExponentOfFloat - 1;
+    uint64_t exponent = floatFields.exponent + maxExponentOfFloat - 1;
     exponent <<= TOTAL_POSIT_BITS - exponentBitsForRepresentation - 1;
 
     uint64_t floatNumber = 0;
@@ -140,33 +141,7 @@ T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentB
 
 }
 
-template<typename T>
-T Posit::extractExponent(int totalRepresentationBits, int usedBits, int bitsInExponent, T &remainingBits) const {
-    T exponent = 0;
-    while ((usedBits + bitsInExponent) < totalBits && bitsInExponent < exponentBits &&
-           (usedBits + bitsInExponent) < totalRepresentationBits) {
-        exponent <<= 1;
-        exponent = exponent | (remainingBits >> (totalRepresentationBits - 1));
-        remainingBits <<= 1;
-        bitsInExponent++;
-    }
-    return exponent;
-}
-
-int Posit::calculateRegime(bool regimeSign, int regimeBits) const { return regimeSign ? regimeBits - 1 : -regimeBits; }
-
-template<typename T>
-int Posit::calculateRegimeBits(T remainingBits, int totalRepresentationBits, int exponentSign) const {
-    int regimeBits = 0;
-    while (remainingBits >> (totalRepresentationBits - 1) == exponentSign && regimeBits < (totalBits - 1) &&
-           regimeBits < totalRepresentationBits - 1) {
-        regimeBits++;
-        remainingBits <<= 1;
-    }
-    return regimeBits;
-}
-
-FloatFields Posit::extractFields(bool sign,uint64_t positBits) const {
+FloatFields Posit::extractFields(bool sign, uint64_t positBits) const {
     FloatFields floatFields = FloatFields{false, 0, 0};
     int usedBits = 1;
     bool regimeSign = positBits >> (TOTAL_POSIT_BITS - usedBits);
@@ -197,7 +172,7 @@ FloatFields Posit::extractFields(bool sign,uint64_t positBits) const {
     return floatFields;
 }
 
-long int Posit::calculatePowerOfTwo(uint8_t power){
+long int Posit::calculatePowerOfTwo(uint8_t power) {
     long int number = 1;
     while (power > 0) {
         number <<= 1;
