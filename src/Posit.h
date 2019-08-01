@@ -26,6 +26,8 @@ private:
 
     bool isZero();
 
+    bool isInfinite();
+
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 
@@ -40,4 +42,6 @@ public:
     float toFloat();
 
     Posit* add(Posit* anotherPosit);
+
+    Posit* clone();
 };

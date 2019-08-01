@@ -190,13 +190,24 @@ int Posit::calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const {
 
 Posit *Posit::add(Posit *anotherPosit) {
     bool isPosit1Zero = this->isZero();
+    bool isPosit1Infinite = this->isInfinite();
     bool isPosit2Zero = anotherPosit->isZero();
-    if(isPosit1Zero | isPosit2Zero){
-        Posit* newPosit = new Posit(totalBits,exponentBits);
-        newPosit->binaryFormat = this->binaryFormat | anotherPosit->binaryFormat;
-        return newPosit;
+    bool isPosit2Infinite = anotherPosit->isInfinite();
+    if(isPosit1Zero | isPosit2Infinite){
+        return anotherPosit->clone();
+    }
+    if(isPosit2Zero | isPosit1Infinite){
+        return this->clone();
     }
     return new Posit(totalBits,exponentBits);
+}
+
+bool Posit::isInfinite(){
+    uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
+    positBits <<= 1;
+    positBits = sign ? -positBits : positBits;
+    return sign ? positBits == 0 : false;
 }
 
 bool Posit::isZero() {
@@ -204,4 +215,10 @@ bool Posit::isZero() {
     bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
     positBits = sign ? -positBits : positBits;
     return sign ? false : positBits == 0;
+}
+
+Posit *Posit::clone() {
+    Posit* newPosit = new Posit(totalBits,exponentBits);
+    newPosit->binaryFormat = this->binaryFormat;
+    return newPosit;
 }

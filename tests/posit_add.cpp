@@ -16,7 +16,7 @@ void shouldReturnZeroPositWhenTwoPositsAreAdded() {
     verifyAdditionOfPosits(posit1,posit2,expectedPosit);
 };
 
-void shouldReturnTheNonZeroValueOfPositWhenBothTotalBitsAndExponentsAreEqualAreAdded() {
+void shouldReturnAnotherPositValueWhenTheCurrentPositIsZero() {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x40);
 
@@ -24,17 +24,34 @@ void shouldReturnTheNonZeroValueOfPositWhenBothTotalBitsAndExponentsAreEqualAreA
     verifyAdditionOfPosits(posit1,posit2,expectedPosit);
 };
 
-void shouldReturnTheNonZeroValueOfPositWhenBothTotalBitsAreEqualAndExponentsSizesAreNotEqualAreAdded(){
-    Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
-    Posit *posit2 = Utils::createPositByUint(8, 1, 0x40);
+void shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero() {
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x40);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
 
     Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x40);
     verifyAdditionOfPosits(posit1,posit2,expectedPosit);
+};
+
+void shouldReturnInfinityWhenTheCurrentValueIsInfinity(){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x80);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x01);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x80);
+    verifyAdditionOfPosits(posit1,posit2,expectedPosit);
 }
 
+void shouldReturnInfinityWhenTheAnotherPositValueIsInfinity(){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x10);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x80);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x80);
+    verifyAdditionOfPosits(posit1,posit2,expectedPosit);
+}
 int main() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
-    shouldReturnTheNonZeroValueOfPositWhenBothTotalBitsAndExponentsAreEqualAreAdded();
-    shouldReturnTheNonZeroValueOfPositWhenBothTotalBitsAreEqualAndExponentsSizesAreNotEqualAreAdded();
+    shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
+    shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero();
+    shouldReturnInfinityWhenTheCurrentValueIsInfinity();
+    shouldReturnInfinityWhenTheAnotherPositValueIsInfinity();
     return 0;
 };
