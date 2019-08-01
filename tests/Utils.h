@@ -11,6 +11,9 @@ class Posit;
 class Utils {
 public:
     static Posit *createPositByUint(uint8_t totalBits, uint8_t exponentBits, uint64_t positValue);
+
     static Posit *createPositByFloat(uint8_t totalBits, uint8_t exponentBits, float floatValue);
+
+    static void verifyPosits(Posit *posit1, Posit *posit2);
 };
 

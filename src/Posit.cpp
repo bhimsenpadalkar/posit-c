@@ -1,9 +1,6 @@
 #include <cstdint>
 #include "Posit.h"
 #include <cmath>
-#include <iostream>
-#include <type_traits>
-
 using namespace std;
 
 #define IS_NEGATIVE(a) a < 0
@@ -189,4 +186,22 @@ int Posit::calculateRegimeBits(uint64_t remainingBits, bool regimeSign) const {
         remainingBits <<= 1;
     }
     return regimeBits;
+}
+
+Posit *Posit::add(Posit *anotherPosit) {
+    bool isPosit1Zero = this->isZero();
+    bool isPosit2Zero = anotherPosit->isZero();
+    if(isPosit1Zero | isPosit2Zero){
+        Posit* newPosit = new Posit(totalBits,exponentBits);
+        newPosit->binaryFormat = this->binaryFormat | anotherPosit->binaryFormat;
+        return newPosit;
+    }
+    return new Posit(totalBits,exponentBits);
+}
+
+bool Posit::isZero() {
+    uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
+    positBits = sign ? -positBits : positBits;
+    return sign ? false : positBits == 0;
 }

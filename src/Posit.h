@@ -1,3 +1,4 @@
+#include <iostream>
 struct FloatFields {
     bool sign;
     long int exponent;
@@ -23,6 +24,8 @@ private:
 
     static long int calculatePowerOfTwo(uint8_t power);
 
+    bool isZero();
+
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 
@@ -35,4 +38,6 @@ public:
     double toDouble();
 
     float toFloat();
+
+    Posit* add(Posit* anotherPosit);
 };

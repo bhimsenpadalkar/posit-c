@@ -14,3 +14,4 @@ Testing/
 tests/test_posit_float
 tests/test_posit_double
 tests/test_posit_extraction
+tests/test_posit_add
