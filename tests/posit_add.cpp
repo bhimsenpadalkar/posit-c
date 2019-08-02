@@ -47,11 +47,21 @@ void shouldReturnInfinityWhenTheAnotherPositValueIsInfinity(){
     Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x80);
     verifyAdditionOfPosits(posit1,posit2,expectedPosit);
 }
+
+void shouldReturnAddedValueWhenBothExponentsAndSignsAreEqual(){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x6C);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x62);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x73);
+    verifyAdditionOfPosits(posit1,posit2,expectedPosit);
+}
+
 int main() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
     shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
     shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero();
     shouldReturnInfinityWhenTheCurrentValueIsInfinity();
     shouldReturnInfinityWhenTheAnotherPositValueIsInfinity();
+    shouldReturnAddedValueWhenBothExponentsAndSignsAreEqual();
     return 0;
 };

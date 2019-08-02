@@ -41,11 +41,11 @@ void shouldGiveInfiniteRepresentationOfPositToDouble() {
 }
 
 int main() {
+    shouldGiveZeroRepresentationOfPositToDouble();
+    shouldGiveInfiniteRepresentationOfPositToDouble();
     shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits();
     shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits();
     shouldConvertPositivePositValueIntoDouble();
     shouldConvertNegativePositValueIntoDouble();
-    shouldGiveZeroRepresentationOfPositToDouble();
-    shouldGiveInfiniteRepresentationOfPositToDouble();
     return 0;
 }

@@ -3,6 +3,12 @@ struct FloatFields {
     bool sign;
     long int exponent;
     uint64_t fraction;
+    bool hiddenBit = true;
+};
+
+struct RegimeFields {
+    uint64_t regime;
+    uint8_t noOfBits;
 };
 
 class Posit {
@@ -22,11 +28,9 @@ private:
 
     FloatFields extractFields(bool sign, uint64_t positBits) const;
 
-    static long int calculatePowerOfTwo(uint8_t power);
+    static uint64_t calculatePowerOfTwo(uint8_t power);
 
-    bool isZero();
-
-    bool isInfinite();
+    Posit* create(FloatFields floatFields);
 
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
@@ -44,4 +48,8 @@ public:
     Posit* add(Posit* anotherPosit);
 
     Posit* clone();
+
+    RegimeFields generateRegime(bool sign, long exponent);
+
+    uint64_t generateExponent(bool sign, long exponent);
 };
