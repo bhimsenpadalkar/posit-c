@@ -1,4 +1,3 @@
-#include <cstdint>
 #include "Posit.h"
 #include <cmath>
 
@@ -214,18 +213,20 @@ Posit *Posit::add(Posit *anotherPosit) {
     FloatFields posit2Fields = anotherPosit->extractFields(sign2, posit2Bits);
 
     if (posit1Fields.exponent == posit2Fields.exponent) {
-        uintmax_t fraction1 = posit1Fields.fraction;
-        uintmax_t fraction2 = posit2Fields.fraction;
-
-        uintmax_t fraction = fraction1 + fraction2;
-        uint8_t extra = posit1Fields.hiddenBit + posit2Fields.hiddenBit + (fraction >> 64);
+        uint64_t fraction1 = posit1Fields.fraction;
+        uint64_t fraction2 = posit2Fields.fraction;
+        fraction1 >>= 1;
+        fraction2 >>= 1;
+        uint64_t fraction = fraction1 + fraction2;
+        uint8_t extra = posit1Fields.hiddenBit + posit2Fields.hiddenBit + (fraction >> 63);
         if (extra > 1) {
-            fraction >>= 1;
             fraction = fraction & 0x7FFFFFFFFFFFFFFF;
-            uintmax_t temp = extra - 2;
+            uint64_t temp = extra - 2;
             temp <<= 63;
             fraction = temp | fraction;
             posit1Fields.exponent += 1;
+        } else {
+            fraction <<= 1;
         }
         posit1Fields.fraction = fraction;
         return create(posit1Fields);
@@ -265,7 +266,7 @@ Posit *Posit::create(FloatFields floatFields) {
         positExponent = 0;
         bitsRequiredForExponent = 0;
     } else {
-        positExponent = bitsRequiredForExponent - remainingBits;
+        positExponent >>= bitsRequiredForExponent - remainingBits;
         bitsRequiredForExponent = remainingBits;
     }
     remainingBits -= bitsRequiredForExponent;
@@ -303,6 +304,6 @@ RegimeFields Posit::generateRegime(bool sign, long exponent) {
 
 uint64_t Posit::generateExponent(bool sign, long exponent) {
     uint64_t base = calculatePowerOfTwo(exponentBits);
-    uint64_t exponentBits = exponent/base;
+    uint64_t exponentBits = exponent % base;
     return sign ? base - exponentBits : exponentBits;
 }
