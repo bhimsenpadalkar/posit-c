@@ -212,26 +212,47 @@ Posit *Posit::add(Posit *anotherPosit) {
     FloatFields posit1Fields = this->extractFields(sign1, posit1Bits);
     FloatFields posit2Fields = anotherPosit->extractFields(sign2, posit2Bits);
 
-    if (posit1Fields.exponent == posit2Fields.exponent) {
-        uint64_t fraction1 = posit1Fields.fraction;
-        uint64_t fraction2 = posit2Fields.fraction;
-        fraction1 >>= 1;
-        fraction2 >>= 1;
-        uint64_t fraction = fraction1 + fraction2;
-        uint8_t extra = posit1Fields.hiddenBit + posit2Fields.hiddenBit + (fraction >> 63);
-        if (extra > 1) {
-            fraction = fraction & 0x7FFFFFFFFFFFFFFF;
-            uint64_t temp = extra - 2;
-            temp <<= 63;
-            fraction = temp | fraction;
-            posit1Fields.exponent += 1;
-        } else {
-            fraction <<= 1;
-        }
-        posit1Fields.fraction = fraction;
-        return create(posit1Fields);
+    if(posit1Fields.exponent < posit2Fields.exponent){
+        FloatFields temp = posit1Fields;
+        posit1Fields = posit2Fields;
+        posit2Fields = temp;
     }
-    return new Posit(totalBits, exponentBits);
+
+    uint64_t exponentDifference = posit1Fields.exponent - posit2Fields.exponent;
+
+    cout << (posit1Fields.fraction >> 56) << endl;
+    cout << (posit2Fields.fraction >> 56) << endl;
+    for(uint64_t i = 0;i < exponentDifference;i++){
+         posit2Fields.fraction >>= 1;
+        if(i == 0){
+            uint64_t temp = 1;
+            temp <<= 63;
+            posit2Fields.fraction = posit2Fields.fraction | temp;
+            posit2Fields.hiddenBit = false;
+            posit2Fields.exponent++;
+        }
+    }
+    cout << (posit1Fields.fraction >> 56) << endl;
+    cout << (posit2Fields.fraction >> 56) << endl;
+    uint64_t fraction1 = posit1Fields.fraction;
+    uint64_t fraction2 = posit2Fields.fraction;
+    fraction1 >>= 1;
+    fraction2 >>= 1;
+    uint64_t fraction = fraction1 + fraction2;
+    uint8_t extra = posit1Fields.hiddenBit + posit2Fields.hiddenBit + (fraction >> 63);
+    if (extra > 1) {
+        fraction = fraction & 0x7FFFFFFFFFFFFFFF;
+        cout << (fraction >> 56) << endl;
+        uint64_t temp = extra - 2;
+        temp <<= 63;
+        fraction = temp | fraction;
+        cout << (fraction >> 56) << endl;
+        posit1Fields.exponent += 1;
+    } else {
+        fraction <<= 1;
+    }
+    posit1Fields.fraction = fraction;
+    return create(posit1Fields);
 }
 
 Posit *Posit::create(FloatFields floatFields) {
