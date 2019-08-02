@@ -80,6 +80,14 @@ void shouldReturnAddedValueWhenBothExponentsAreNotEqualButSignIsPositive(){
     verifyAdditionOfPosits(posit1,posit2,expectedPosit);
 }
 
+void shouldReturnAddedValueWhenBothExponentsAreNotEqualAndAreNegative(){
+    Posit *posit1 = Utils::createPositByUint(16, 0, 0x1800);
+    Posit *posit2 = Utils::createPositByUint(16, 0, 0x6E00);
+
+    Posit *expectedPosit = Utils::createPositByUint(16, 0, 0x7040);
+    verifyAdditionOfPosits(posit1,posit2,expectedPosit);
+}
+
 int main() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
     shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
@@ -90,5 +98,6 @@ int main() {
     shouldReturnAddedValueWhenBothExponentAndSignsAreEqual1();
     shouldReturnAddedValueWhenBothExponentAndSignsAreEqual2();
     shouldReturnAddedValueWhenBothExponentsAreNotEqualButSignIsPositive();
+    shouldReturnAddedValueWhenBothExponentsAreNotEqualAndAreNegative();
     return 0;
 };
