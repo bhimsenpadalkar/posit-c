@@ -29,7 +29,7 @@ private:
     FloatFields extractFields(bool sign, uint64_t positBits) const;
 
     static uint64_t calculatePowerOfTwo(uint8_t power);
-
+    static Posit* create(uint8_t totalBits,uint8_t exponentBits,FloatFields floatFields);
     Posit* create(FloatFields floatFields);
 
 public:
@@ -49,7 +49,9 @@ public:
 
     Posit* clone();
 
-    RegimeFields generateRegime(bool sign, long exponent);
+    Posit* clone(uint8_t totalBitsOfPosit,uint8_t exponentBitsOfPosit);
 
-    uint64_t generateExponent(bool sign, long exponent);
+    static RegimeFields generateRegime(bool sign, long exponent,uint8_t exponentBits);
+
+    static uint64_t generateExponent(bool sign, long exponent,uint8_t exponentBits);
 };

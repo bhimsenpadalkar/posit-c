@@ -194,7 +194,7 @@ Posit *Posit::add(Posit *anotherPosit) {
     posit1Bits <<= 1;
     posit1Bits = sign1 ? -posit1Bits : posit1Bits;
 
-    uint64_t posit2Bits = anotherPosit->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    uint64_t posit2Bits = anotherPosit->binaryFormat << (TOTAL_POSIT_BITS - anotherPosit->totalBits);
     bool sign2 = posit2Bits >> (TOTAL_POSIT_BITS - 1);
     posit2Bits <<= 1;
     posit2Bits = sign2 ? -posit2Bits : posit2Bits;
@@ -204,7 +204,7 @@ Posit *Posit::add(Posit *anotherPosit) {
     bool isPosit2Zero = sign2 ? false : posit2Bits == 0;
     bool isPosit2Infinite = sign2 ? posit2Bits == 0 : false;
     if (isPosit1Zero | isPosit2Infinite) {
-        return anotherPosit->clone();
+        return anotherPosit->clone(totalBits, exponentBits);
     }
     if (isPosit2Zero | isPosit1Infinite) {
         return this->clone();
@@ -212,7 +212,7 @@ Posit *Posit::add(Posit *anotherPosit) {
     FloatFields posit1Fields = this->extractFields(sign1, posit1Bits);
     FloatFields posit2Fields = anotherPosit->extractFields(sign2, posit2Bits);
 
-    if(posit1Fields.exponent < posit2Fields.exponent){
+    if (posit1Fields.exponent < posit2Fields.exponent) {
         FloatFields temp = posit1Fields;
         posit1Fields = posit2Fields;
         posit2Fields = temp;
@@ -222,10 +222,10 @@ Posit *Posit::add(Posit *anotherPosit) {
 
     cout << (posit1Fields.fraction >> 56) << endl;
     cout << (posit2Fields.fraction >> 56) << endl;
-    for(uint64_t i = 0;i < exponentDifference;i++){
+    for (uint64_t i = 0; i < exponentDifference; i++) {
         posit2Fields.fraction >>= 1;
         posit2Fields.exponent++;
-        if(i == 0){
+        if (i == 0) {
             uint64_t temp = 1;
             temp <<= 63;
             posit2Fields.fraction = posit2Fields.fraction | temp;
@@ -264,8 +264,8 @@ Posit *Posit::create(FloatFields floatFields) {
     bool exponentSign = exponent < 0;
     exponent = exponentSign ? -exponent : exponent;
 
-    RegimeFields regimeDetails = generateRegime(exponentSign, exponent);
-    uint64_t positExponent = generateExponent(exponentSign,exponent);
+    RegimeFields regimeDetails = generateRegime(exponentSign, exponent, exponentBits);
+    uint64_t positExponent = generateExponent(exponentSign, exponent, exponentBits);
     uint64_t positFraction = floatFields.fraction;
 
     int bitsRequiredForRegime = regimeDetails.noOfBits;
@@ -305,7 +305,7 @@ Posit *Posit::clone() {
     return newPosit;
 }
 
-RegimeFields Posit::generateRegime(bool sign, long exponent) {
+RegimeFields Posit::generateRegime(bool sign, long exponent, uint8_t exponentBits) {
     RegimeFields regimeFields = RegimeFields();
     int base = calculatePowerOfTwo(exponentBits);
     uint64_t regimeBits = 0;
@@ -324,8 +324,75 @@ RegimeFields Posit::generateRegime(bool sign, long exponent) {
     return regimeFields;
 }
 
-uint64_t Posit::generateExponent(bool sign, long exponent) {
+uint64_t Posit::generateExponent(bool sign, long exponent, uint8_t exponentBits) {
     uint64_t base = calculatePowerOfTwo(exponentBits);
-    uint64_t exponentBits = exponent % base;
-    return sign ? base - exponentBits : exponentBits;
+    uint64_t exponentForPosit = exponent % base;
+    return sign ? base - exponentForPosit : exponentForPosit;
+}
+
+Posit *Posit::clone(uint8_t totalBitsOfPosit, uint8_t exponentBitsOfPosit) {
+    if (totalBits == totalBitsOfPosit && exponentBits == exponentBitsOfPosit) {
+        return this->clone();
+    }
+    uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
+    positBits <<= 1;
+    positBits = sign ? -positBits : positBits;
+
+    if (positBits == 0x0) {
+        Posit *posit = new Posit(totalBitsOfPosit, exponentBitsOfPosit);
+        if (!sign) {
+            return posit;
+        }
+        posit->binaryFormat = 1;
+        posit->binaryFormat <<= (totalBitsOfPosit - 1);
+        return posit;
+    }
+
+    FloatFields floatFields = this->extractFields(sign, positBits);
+
+    return create(totalBitsOfPosit, exponentBitsOfPosit, floatFields);
+}
+
+Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FloatFields floatFields) {
+    Posit *positRepresentation = new Posit(totalBits, exponentBits);
+    long int exponent = floatFields.exponent;
+    bool sign = floatFields.sign;
+
+    bool exponentSign = exponent < 0;
+    exponent = exponentSign ? -exponent : exponent;
+
+    RegimeFields regimeDetails = generateRegime(exponentSign, exponent, exponentBits);
+    uint64_t positExponent = generateExponent(exponentSign, exponent, exponentBits);
+    uint64_t positFraction = floatFields.fraction;
+
+    int bitsRequiredForRegime = regimeDetails.noOfBits;
+    int bitsRequiredForExponent = 0;
+    int bitsRequiredForSign = 1;
+    int remainingBits = 0;
+
+    uint64_t positRegime = regimeDetails.regime;
+    if (bitsRequiredForRegime > (totalBits - bitsRequiredForSign)) {
+        positRegime >>= bitsRequiredForRegime - (totalBits - bitsRequiredForSign);
+        bitsRequiredForRegime = totalBits - bitsRequiredForSign;
+    }
+    remainingBits = totalBits - bitsRequiredForSign - bitsRequiredForRegime;
+    positRegime <<= remainingBits;
+
+    if (remainingBits > exponentBits) {
+        positExponent <<= remainingBits - exponentBits;
+        bitsRequiredForExponent = exponentBits;
+    } else if (remainingBits == 0) {
+        positExponent = 0;
+        bitsRequiredForExponent = 0;
+    } else {
+        positExponent >>= bitsRequiredForExponent - remainingBits;
+        bitsRequiredForExponent = remainingBits;
+    }
+    remainingBits -= bitsRequiredForExponent;
+    positFraction >>= 64 - remainingBits;
+    
+    uint64_t binary = positRegime | positExponent | positFraction;
+    positRepresentation->binaryFormat = binary;
+    return positRepresentation;
 }
