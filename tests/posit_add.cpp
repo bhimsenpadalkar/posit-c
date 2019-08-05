@@ -112,6 +112,30 @@ void shouldReturnInfinityInTheFirstNumberFormatWhenTheSecondNumberIsInfinity() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
+void shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberIsNegativeAndSameExponentBits(){
+    Posit *posit1 = Utils::createPositByUint(8, 1, 0x00);
+    Posit *posit2 = Utils::createPositByUint(16, 1, 0x9D00);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 1, 0x9D);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess(){
+    Posit *posit1 = Utils::createPositByUint(8, 1, 0x00);
+    Posit *posit2 = Utils::createPositByUint(16, 0, 0x9D00);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 1, 0xAD);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore(){
+    Posit *posit1 = Utils::createPositByUint(16, 1, 0x0000);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x9D);
+
+    Posit *expectedPosit = Utils::createPositByUint(16, 1, 0xAD00);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
 int main() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
     shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
@@ -126,5 +150,8 @@ int main() {
     shouldReturnAddedValueOfNegativeExponentWhenBothAreNegativeExponents();
     shouldReturnSecondNumberConvertedIntoFirstNumberConstraintsWhenFirstNumberIsZero();
     shouldReturnInfinityInTheFirstNumberFormatWhenTheSecondNumberIsInfinity();
+    shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberIsNegativeAndSameExponentBits();
+    shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess();
+    shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore();
     return 0;
 }

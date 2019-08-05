@@ -295,6 +295,16 @@ Posit *Posit::clone(uint8_t totalBitsOfPosit, uint8_t exponentBitsOfPosit) {
     if (totalBits == totalBitsOfPosit && exponentBits == exponentBitsOfPosit) {
         return this->clone();
     }
+
+    if(exponentBits == exponentBitsOfPosit){
+        Posit* posit = new Posit(totalBitsOfPosit,exponentBitsOfPosit);
+        if(totalBitsOfPosit > totalBits){
+            posit->binaryFormat = this->binaryFormat << (totalBitsOfPosit - totalBits);
+        } else {
+            posit->binaryFormat = this->binaryFormat >> (totalBits - totalBitsOfPosit);
+        }
+        return posit;
+    }
     uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
     bool sign = positBits >> (TOTAL_POSIT_BITS - 1);
     positBits <<= 1;
@@ -355,5 +365,11 @@ Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FloatFields floatF
     
     uint64_t binary = positRegime | positExponent | positFraction;
     positRepresentation->binaryFormat = binary;
+
+    if(sign){
+        positRepresentation->binaryFormat <<= 64 - totalBits;
+        positRepresentation->binaryFormat = -positRepresentation->binaryFormat;
+        positRepresentation->binaryFormat >>= 64 - totalBits;
+    }
     return positRepresentation;
 }
