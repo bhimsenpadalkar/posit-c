@@ -220,8 +220,6 @@ Posit *Posit::add(Posit *anotherPosit) {
 
     uint64_t exponentDifference = posit1Fields.exponent - posit2Fields.exponent;
 
-    cout << (posit1Fields.fraction >> 56) << endl;
-    cout << (posit2Fields.fraction >> 56) << endl;
     for (uint64_t i = 0; i < exponentDifference; i++) {
         posit2Fields.fraction >>= 1;
         posit2Fields.exponent++;
@@ -232,22 +230,17 @@ Posit *Posit::add(Posit *anotherPosit) {
             posit2Fields.hiddenBit = false;
         }
     }
-    cout << (posit1Fields.fraction >> 56) << endl;
-    cout << (posit2Fields.fraction >> 56) << endl;
     uint64_t fraction1 = posit1Fields.fraction;
     uint64_t fraction2 = posit2Fields.fraction;
     fraction1 >>= 1;
     fraction2 >>= 1;
     uint64_t fraction = fraction1 + fraction2;
-    cout << (fraction >> 63) << endl;
     uint8_t extra = posit1Fields.hiddenBit + posit2Fields.hiddenBit + (fraction >> 63);
     if (extra > 1) {
         fraction = fraction & 0x7FFFFFFFFFFFFFFF;
-        cout << (fraction >> 56) << endl;
         uint64_t temp = extra - 2;
         temp <<= 63;
         fraction = temp | fraction;
-        cout << (fraction >> 56) << endl;
         posit1Fields.exponent += 1;
     } else {
         fraction <<= 1;
