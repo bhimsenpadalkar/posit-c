@@ -230,6 +230,20 @@ Posit *Posit::add(Posit *anotherPosit) {
             posit2Fields.hiddenBit = false;
         }
     }
+    if(posit1Fields.sign == posit2Fields.sign){
+        return sameSignAddition(posit1Fields, posit2Fields);
+    }
+    return differentSignAddition(posit1Fields,posit2Fields);
+}
+
+Posit *Posit::differentSignAddition(FloatFields &posit1Fields, FloatFields &posit2Fields){
+    if(posit1Fields.fraction == posit2Fields.fraction && posit2Fields.hiddenBit){
+        return new Posit(totalBits,exponentBits);
+    }
+    return new Posit(totalBits,exponentBits);
+}
+
+Posit *Posit::sameSignAddition(FloatFields &posit1Fields,FloatFields &posit2Fields) {
     uint64_t fraction1 = posit1Fields.fraction;
     uint64_t fraction2 = posit2Fields.fraction;
     fraction1 >>= 1;

@@ -32,6 +32,10 @@ private:
     static Posit* create(uint8_t totalBits,uint8_t exponentBits,FloatFields floatFields);
     Posit* create(FloatFields floatFields);
 
+    Posit *sameSignAddition(FloatFields &posit1Fields, FloatFields &posit2Fields);
+
+    Posit *differentSignAddition(FloatFields &posit1Fields, FloatFields &posit2Fields);
+
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 

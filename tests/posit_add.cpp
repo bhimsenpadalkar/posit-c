@@ -136,6 +136,22 @@ void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
+void shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfSameSize(){
+    Posit *posit1 = Utils::createPositByUint(8, 0, -0x9D);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x9D);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x00);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+void shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize(){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x9D);
+    Posit *posit2 = Utils::createPositByUint(16, 0, -0xB680);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x00);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
 int main() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
     shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
@@ -153,5 +169,7 @@ int main() {
     shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberIsNegativeAndSameExponentBits();
     shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess();
     shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore();
+    shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfSameSize();
+    shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize();
     return 0;
 }
