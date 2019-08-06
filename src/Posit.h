@@ -1,5 +1,5 @@
 #include <iostream>
-struct FloatFields {
+struct FusedOperationFields {
     bool sign;
     long int exponent;
     uint64_t fraction;
@@ -26,15 +26,15 @@ private:
     T
     getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentBitsForRepresentation, U infiniteValue) const;
 
-    FloatFields extractFields(bool sign, uint64_t positBits) const;
+    FusedOperationFields extractFields(bool sign, uint64_t positBits) const;
 
     static uint64_t calculatePowerOfTwo(uint8_t power);
-    static Posit* create(uint8_t totalBits,uint8_t exponentBits,FloatFields floatFields);
-    Posit* create(FloatFields floatFields);
+    static Posit* create(uint8_t totalBits, uint8_t exponentBits, FusedOperationFields floatFields);
+    Posit* create(FusedOperationFields floatFields);
 
-    Posit *sameSignAddition(FloatFields &posit1Fields, FloatFields &posit2Fields);
+    Posit *sameSignAddition(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields);
 
-    Posit *differentSignAddition(FloatFields &posit1Fields, FloatFields &posit2Fields);
+    Posit *differentSignAddition(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields);
 
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
@@ -58,4 +58,7 @@ public:
     static RegimeFields generateRegime(bool sign, long exponent,uint8_t exponentBits);
 
     static uint64_t generateExponent(bool sign, long exponent,uint8_t exponentBits);
+
+    void leftShiftFractionAndHiddenBit(FusedOperationFields &positFields) const;
+
 };

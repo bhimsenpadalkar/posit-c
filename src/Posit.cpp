@@ -116,7 +116,7 @@ T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentB
     if (positBits == 0) {
         return sign ? inf.value : 0;
     }
-    const FloatFields &floatFields = extractFields(sign, positBits);
+    const FusedOperationFields &floatFields = extractFields(sign, positBits);
     const long int maxExponentOfFloat = calculatePowerOfTwo(exponentBitsForRepresentation - 1);
     if (floatFields.exponent > maxExponentOfFloat - 1) {
         return sign ? -inf.value : inf.value;
@@ -138,9 +138,10 @@ T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentB
 
 }
 
-FloatFields Posit::extractFields(bool sign, uint64_t positBits) const {
-    FloatFields floatFields = FloatFields{false, 0, 0};
+FusedOperationFields Posit::extractFields(bool sign, uint64_t positBits) const {
+    FusedOperationFields floatFields = FusedOperationFields{false, 0, 0};
     int usedBits = 1;
+    cout << ( positBits >> 56) <<endl;
     bool regimeSign = positBits >> (TOTAL_POSIT_BITS - usedBits);
     positBits <<= 1;
     int regimeBits = 1 + calculateRegimeBits(positBits, regimeSign);
@@ -209,11 +210,11 @@ Posit *Posit::add(Posit *anotherPosit) {
     if (isPosit2Zero | isPosit1Infinite) {
         return this->clone();
     }
-    FloatFields posit1Fields = this->extractFields(sign1, posit1Bits);
-    FloatFields posit2Fields = anotherPosit->extractFields(sign2, posit2Bits);
+    FusedOperationFields posit1Fields = this->extractFields(sign1, posit1Bits);
+    FusedOperationFields posit2Fields = anotherPosit->extractFields(sign2, posit2Bits);
 
     if (posit1Fields.exponent < posit2Fields.exponent) {
-        FloatFields temp = posit1Fields;
+        FusedOperationFields temp = posit1Fields;
         posit1Fields = posit2Fields;
         posit2Fields = temp;
     }
@@ -236,14 +237,39 @@ Posit *Posit::add(Posit *anotherPosit) {
     return differentSignAddition(posit1Fields,posit2Fields);
 }
 
-Posit *Posit::differentSignAddition(FloatFields &posit1Fields, FloatFields &posit2Fields){
+Posit *Posit::differentSignAddition(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields){
     if(posit1Fields.fraction == posit2Fields.fraction && posit2Fields.hiddenBit){
         return new Posit(totalBits,exponentBits);
     }
-    return new Posit(totalBits,exponentBits);
+    posit2Fields.fraction >> (64 - 5);
+    leftShiftFractionAndHiddenBit(posit1Fields);
+    leftShiftFractionAndHiddenBit(posit2Fields);
+    cout << (posit1Fields.fraction >> (64 - 3)) << endl;
+    cout << (posit2Fields.fraction >> (64 - 5)) << endl;
+    if(posit2Fields.fraction > posit1Fields.fraction){
+        FusedOperationFields temp = posit1Fields;
+        posit1Fields = posit2Fields;
+        posit2Fields = temp;
+    }
+    posit1Fields.fraction -= posit2Fields.fraction;
+    while(!posit1Fields.hiddenBit){
+        posit1Fields.hiddenBit = posit1Fields.fraction >> 63;
+        posit1Fields.fraction <<= 1;
+        posit1Fields.exponent--;
+    }
+    return create(posit1Fields);
 }
 
-Posit *Posit::sameSignAddition(FloatFields &posit1Fields,FloatFields &posit2Fields) {
+void Posit::leftShiftFractionAndHiddenBit(FusedOperationFields &positFields) const {
+    uint64_t temp = positFields.hiddenBit;
+    temp <<= 63;
+    positFields.fraction >>= 1;
+    positFields.fraction |= temp;
+    positFields.hiddenBit = false;
+    positFields.exponent++;
+}
+
+Posit *Posit::sameSignAddition(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields) {
     uint64_t fraction1 = posit1Fields.fraction;
     uint64_t fraction2 = posit2Fields.fraction;
     fraction1 >>= 1;
@@ -263,7 +289,7 @@ Posit *Posit::sameSignAddition(FloatFields &posit1Fields,FloatFields &posit2Fiel
     return create(posit1Fields);
 }
 
-Posit *Posit::create(FloatFields floatFields) {
+Posit *Posit::create(FusedOperationFields floatFields) {
     return create(totalBits,exponentBits,floatFields);
 }
 
@@ -327,12 +353,12 @@ Posit *Posit::clone(uint8_t totalBitsOfPosit, uint8_t exponentBitsOfPosit) {
         return posit;
     }
 
-    FloatFields floatFields = this->extractFields(sign, positBits);
+    FusedOperationFields floatFields = this->extractFields(sign, positBits);
 
     return create(totalBitsOfPosit, exponentBitsOfPosit, floatFields);
 }
 
-Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FloatFields floatFields) {
+Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FusedOperationFields floatFields) {
     Posit *positRepresentation = new Posit(totalBits, exponentBits);
     long int exponent = floatFields.exponent;
     bool sign = floatFields.sign;
