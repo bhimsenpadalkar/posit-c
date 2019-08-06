@@ -11,7 +11,4 @@ tests/test_posit
 posit_c
 Testing/
 .vscode/
-tests/test_posit_float
-tests/test_posit_double
-tests/test_posit_extraction
-tests/test_posit_add
+tests/all_tests

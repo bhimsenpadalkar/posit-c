@@ -1,3 +1,5 @@
+#include "PositCreateDoubleTest.h"
+
 #include<iostream>
 #include "../src/Posit.h"
 #include "Utils.h"
@@ -40,7 +42,7 @@ void shouldGiveInfiniteRepresentationOfPositToDouble() {
     ASSERT(inf.binaryValue, 0x7FF0000000000000);
 }
 
-int main() {
+int PositCreateDoubleTest::test() {
     shouldGiveZeroRepresentationOfPositToDouble();
     shouldGiveInfiniteRepresentationOfPositToDouble();
     shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits();

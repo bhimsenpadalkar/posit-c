@@ -1,3 +1,9 @@
+//
+// Created by sai-ganesh on 06/08/19.
+//
+
+#include "PositCreateFloatTest.h"
+
 #include<iostream>
 #include "../src/Posit.h"
 #include "Utils.h"
@@ -53,7 +59,7 @@ void shouldConvert64BitPositIntoFloat(){
     ASSERT(num->toFloat(), 3);
 }
 
-int main() {
+int PositCreateFloatTest::test() {
     shouldReturnZeroForTheNumberZeroAsAPosit();
     shouldReturnInfiniteForTheNumberInfiniteAsAPosit();
     shouldReturnOneForThePositNumberOne();

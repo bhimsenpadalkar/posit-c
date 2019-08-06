@@ -1,47 +1,18 @@
-add_executable(test_posit
-        posit_create.cpp
+add_executable(all_tests
+        tests.cpp
         ../src/Posit.cpp
         ../src/Posit.h
         ./Utils.h
         ./Utils.cpp
+        PositAddTest.h
+        PositAddTest.cpp
+        ./Testable.h
+        ./PositCreateTest.cpp
+        ./PositCreateTest.h
+        PositCreateDoubleTest.cpp
+        PositCreateDoubleTest.h
+        PositCreateFloatTest.cpp
+        PositCreateFloatTest.h
         )
 
-add_executable(test_posit_double
-        posit_create_double.cpp
-        ../src/Posit.cpp
-        ../src/Posit.h
-        ./Utils.h
-        ./Utils.cpp
-        )
-
-add_executable(test_posit_float
-        posit_create_float.cpp
-        ../src/Posit.cpp
-        ../src/Posit.h
-        ./Utils.h
-        ./Utils.cpp
-        )
-
-add_executable(test_posit_add
-        posit_add.cpp
-        ../src/Posit.cpp
-        ../src/Posit.h
-        ./Utils.h
-        ./Utils.cpp
-        )
-
-add_test(
-        creatingPositByFloat test_posit
-)
-
-add_test(
-        creatingDoubleByPosit test_posit_double
-)
-
-add_test(
-        creatingFloatByPosit test_posit_float
-)
-
-add_test(
-        AddingTwoPosits test_posit_add
-)
+add_test(all_tests all_tests)

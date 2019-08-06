@@ -1,5 +1,6 @@
 #include "../src/Posit.h"
 #include "Utils.h"
+#include "PositAddTest.h"
 
 using namespace std;
 
@@ -193,7 +194,7 @@ void shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-int main() {
+int PositAddTest::test() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
     shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
     shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero();

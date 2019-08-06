@@ -1,4 +1,9 @@
+//
+// Created by sai-ganesh on 06/08/19.
+//
+
 #include<iostream>
+#include "PositCreateTest.h"
 #include "../src/Posit.h"
 #include "Utils.h"
 
@@ -69,7 +74,7 @@ void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1() {
     ASSERT(num->getBinaryFormat(), 0x7D);
 }
 
-int main() {
+int PositCreateTest::test() {
     shouldConvertFloatToPositWithLessPrecision_8();
     shouldConvertFloatToPositWithLessPrecision_10();
     shouldConvertFloatToPositWithExponent();
