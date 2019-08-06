@@ -91,7 +91,8 @@ uint64_t Posit::getBinaryFormat() {
 }
 
 void Posit::setPositValue(uint64_t posit) {
-    this->binaryFormat = posit;
+    uint64_t maskValue = calculatePowerOfTwo(totalBits) - 1;
+    this->binaryFormat = posit & maskValue;
 }
 
 double Posit::toDouble() {
