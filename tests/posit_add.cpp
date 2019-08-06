@@ -168,6 +168,31 @@ void shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndPositive(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
+
+void shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive1(){
+    Posit *posit1 = Utils::createPositByUint(16, 2, 0x64AF);
+    Posit *posit2 = Utils::createPositByUint(16,2,0xAF44);
+
+    Posit *expectedPosit = Utils::createPositByUint(16, 2, 0x6423);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+void shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndNegative1(){
+    Posit *posit1 = Utils::createPositByUint(16, 2, 0xAF44);
+    Posit *posit2 = Utils::createPositByUint(16,2,0x64AF);
+
+    Posit *expectedPosit = Utils::createPositByUint(16, 2, 0x6423);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+void shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative(){
+    Posit *posit1 = Utils::createPositByUint(16, 2, 0x9B51);
+    Posit *posit2 = Utils::createPositByUint(16,2,0x50BC);
+
+    Posit *expectedPosit = Utils::createPositByUint(16, 2, 0x9BDD);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
 int main() {
     shouldReturnZeroPositWhenTwoPositsAreAdded();
     shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
@@ -189,5 +214,8 @@ int main() {
     shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize();
     shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive();
     shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndPositive();
+    shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive1();
+    shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndNegative1();
+    shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative();
     return 0;
 }

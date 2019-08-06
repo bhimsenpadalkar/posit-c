@@ -241,11 +241,8 @@ Posit *Posit::differentSignAddition(FusedOperationFields &posit1Fields, FusedOpe
     if(posit1Fields.fraction == posit2Fields.fraction && posit2Fields.hiddenBit){
         return new Posit(totalBits,exponentBits);
     }
-    posit2Fields.fraction >> (64 - 5);
     leftShiftFractionAndHiddenBit(posit1Fields);
     leftShiftFractionAndHiddenBit(posit2Fields);
-    cout << (posit1Fields.fraction >> (64 - 3)) << endl;
-    cout << (posit2Fields.fraction >> (64 - 5)) << endl;
     if(posit2Fields.fraction > posit1Fields.fraction){
         FusedOperationFields temp = posit1Fields;
         posit1Fields = posit2Fields;
