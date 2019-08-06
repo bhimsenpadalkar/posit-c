@@ -213,15 +213,16 @@ Posit *Posit::add(Posit *anotherPosit) {
     }
     FusedOperationFields posit1Fields = this->extractFields(sign1, posit1Bits);
     FusedOperationFields posit2Fields = anotherPosit->extractFields(sign2, posit2Bits);
-
-    if (posit1Fields.exponent < posit2Fields.exponent) {
-        FusedOperationFields temp = posit1Fields;
-        posit1Fields = posit2Fields;
-        posit2Fields = temp;
-    }
-
+    swapIfExponentIsHigher(posit1Fields, posit2Fields);
     uint64_t exponentDifference = posit1Fields.exponent - posit2Fields.exponent;
+    posit2Fields = IncreaseExponent(posit2Fields, exponentDifference);
+    if(posit1Fields.sign == posit2Fields.sign){
+        return sameSignAddition(posit1Fields, posit2Fields);
+    }
+    return differentSignAddition(posit1Fields,posit2Fields);
+}
 
+FusedOperationFields &Posit::IncreaseExponent(FusedOperationFields &posit2Fields, uint64_t exponentDifference) const {
     for (uint64_t i = 0; i < exponentDifference; i++) {
         posit2Fields.fraction >>= 1;
         posit2Fields.exponent++;
@@ -232,10 +233,15 @@ Posit *Posit::add(Posit *anotherPosit) {
             posit2Fields.hiddenBit = false;
         }
     }
-    if(posit1Fields.sign == posit2Fields.sign){
-        return sameSignAddition(posit1Fields, posit2Fields);
+    return posit2Fields;
+}
+
+void Posit::swapIfExponentIsHigher(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields) const {
+    if (posit1Fields.exponent < posit2Fields.exponent) {
+        FusedOperationFields temp = posit1Fields;
+        posit1Fields = posit2Fields;
+        posit2Fields = temp;
     }
-    return differentSignAddition(posit1Fields,posit2Fields);
 }
 
 Posit *Posit::differentSignAddition(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields){

@@ -61,4 +61,7 @@ public:
 
     void leftShiftFractionAndHiddenBit(FusedOperationFields &positFields) const;
 
+    void swapIfExponentIsHigher(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields) const;
+
+    FusedOperationFields &IncreaseExponent(FusedOperationFields &posit2Fields, uint64_t exponentDifference) const;
 };
