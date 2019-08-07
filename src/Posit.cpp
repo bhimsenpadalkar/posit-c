@@ -409,3 +409,7 @@ Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FusedOperationFiel
     }
     return positRepresentation;
 }
+
+Posit *Posit::subtract(Posit *pPosit) {
+    return new Posit(totalBits,exponentBits);
+}

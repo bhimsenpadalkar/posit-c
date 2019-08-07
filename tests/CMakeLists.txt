@@ -11,16 +11,22 @@ target_sources(
 target_include_directories(
         Utils
         PUBLIC
+        Posit
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
+target_link_libraries(
+        Utils
+        Posit
+        gtest_main
+)
 add_executable(
         unit_tests
         PositCreateDoubleTest.cpp
         PositCreateTest.cpp
         PositCreateFloatTest.cpp
         PositAddTest.cpp
-)
+        PositSubtractTest.cpp)
 
 target_link_libraries(
         unit_tests

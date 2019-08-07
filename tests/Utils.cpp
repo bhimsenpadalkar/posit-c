@@ -3,7 +3,8 @@
 //
 
 #include "Utils.h"
-#include "../src/Posit.h"
+#include "Posit.h"
+#include "gtest/gtest.h"
 
 Posit *Utils::createPositByUint(uint8_t totalBits, uint8_t exponentBits, uint64_t positValue) {
     Posit *num = new Posit(totalBits, exponentBits);
@@ -18,5 +19,5 @@ Posit *Utils::createPositByFloat(uint8_t totalBits, uint8_t exponentBits, float 
 }
 
 void Utils::verifyPosits(Posit *posit1, Posit *posit2) {
-    ASSERT(posit1->getBinaryFormat(), posit2->getBinaryFormat());
+    ASSERT_EQ(posit1->getBinaryFormat(), posit2->getBinaryFormat());
 }
