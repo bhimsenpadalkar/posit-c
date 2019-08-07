@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7.2)
+cmake_minimum_required(VERSION 3.10.2)
 project(posit_c)
 
 # place binaries and libraries according to GNU standards
