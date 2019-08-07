@@ -424,6 +424,6 @@ Posit *Posit::negotiate() {
         return this->clone();
     }
     Posit *newPosit = new Posit(totalBits, exponentBits);
-    newPosit->binaryFormat = -this->binaryFormat;
+    newPosit->setPositValue(-this->binaryFormat);
     return newPosit;
 }

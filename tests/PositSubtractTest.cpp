@@ -24,3 +24,18 @@ TEST(Posit_subtract, shouldReturnInfinitePositWhenOneOfthePositIsInfinite){
     Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x80);
     verifySubtractionOfPosits(posit1, posit2, expectedPosit);
 }
+
+TEST(Posit_subtract, shouldReturnTheValueOfItsOwnWhenOtherNumberIsInfinite){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x46);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x46);
+    verifySubtractionOfPosits(posit1, posit2, expectedPosit);
+}
+
+TEST(Posit_subtract, shouldReturnTheNegativeValueOfOtherValueWhenTheCurrentNumberIsZero){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x46);
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, -0x46 );
+    verifySubtractionOfPosits(posit1, posit2, expectedPosit);
+}
