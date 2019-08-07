@@ -1,6 +1,6 @@
-#include "../src/Posit.h"
+#include "Posit.h"
 #include "Utils.h"
-#include "PositAddTest.h"
+#include "gtest/gtest.h"
 
 using namespace std;
 
@@ -9,7 +9,7 @@ void verifyAdditionOfPosits(Posit *posit1, Posit *posit2, Posit *expectedPosit) 
     Utils::verifyPosits(expectedPosit, actualPosit);
 }
 
-void shouldReturnZeroPositWhenTwoPositsAreAdded() {
+TEST(Posit_add, shouldReturnZeroPositWhenTwoPositsAreAdded) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
 
@@ -17,7 +17,7 @@ void shouldReturnZeroPositWhenTwoPositsAreAdded() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAnotherPositValueWhenTheCurrentPositIsZero() {
+TEST(Posit_add, shouldReturnAnotherPositValueWhenTheCurrentPositIsZero) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x40);
 
@@ -25,7 +25,7 @@ void shouldReturnAnotherPositValueWhenTheCurrentPositIsZero() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero() {
+TEST(Posit_add, shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x40);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
 
@@ -33,7 +33,7 @@ void shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnInfinityWhenTheCurrentValueIsInfinity() {
+TEST(Posit_add, shouldReturnInfinityWhenTheCurrentValueIsInfinity) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x80);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x01);
 
@@ -41,7 +41,7 @@ void shouldReturnInfinityWhenTheCurrentValueIsInfinity() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnInfinityWhenTheAnotherPositValueIsInfinity() {
+TEST(Posit_add, shouldReturnInfinityWhenTheAnotherPositValueIsInfinity) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x10);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x80);
 
@@ -49,7 +49,7 @@ void shouldReturnInfinityWhenTheAnotherPositValueIsInfinity() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAddedValueWhenBothExponentsAndSignsAreEqual() {
+TEST(Posit_add, shouldReturnAddedValueWhenBothExponentsAndSignsAreEqual) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x6C);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x62);
 
@@ -57,7 +57,7 @@ void shouldReturnAddedValueWhenBothExponentsAndSignsAreEqual() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAddedValueWhenBothExponentAndSignsAreEqual1() {
+TEST(Posit_add, shouldReturnAddedValueWhenBothExponentAndSignsAreEqual1) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x6D);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x6A);
 
@@ -65,7 +65,7 @@ void shouldReturnAddedValueWhenBothExponentAndSignsAreEqual1() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAddedValueWhenBothExponentAndSignsAreEqual2() {
+TEST(Posit_add, shouldReturnAddedValueWhenBothExponentAndSignsAreEqual2) {
     Posit *posit1 = Utils::createPositByUint(8, 1, 0x5D);
     Posit *posit2 = Utils::createPositByUint(8, 1, 0x5B);
 
@@ -73,7 +73,7 @@ void shouldReturnAddedValueWhenBothExponentAndSignsAreEqual2() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAddedValueWhenBothExponentsAreNotEqualButSignIsPositive() {
+TEST(Posit_add, shouldReturnAddedValueWhenBothExponentsAreNotEqualButSignIsPositive) {
     Posit *posit1 = Utils::createPositByUint(16, 1, 0x6D00);
     Posit *posit2 = Utils::createPositByUint(16, 1, 0x5B00);
 
@@ -81,7 +81,7 @@ void shouldReturnAddedValueWhenBothExponentsAreNotEqualButSignIsPositive() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAddedValueWhenBothExponentsAreNotEqualAndAreNegative() {
+TEST(Posit_add, shouldReturnAddedValueWhenBothExponentsAreNotEqualAndAreNegative) {
     Posit *posit1 = Utils::createPositByUint(16, 0, 0x1800);
     Posit *posit2 = Utils::createPositByUint(16, 0, 0x6E00);
 
@@ -89,7 +89,7 @@ void shouldReturnAddedValueWhenBothExponentsAreNotEqualAndAreNegative() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnAddedValueOfNegativeExponentWhenBothAreNegativeExponents() {
+TEST(Posit_add, shouldReturnAddedValueOfNegativeExponentWhenBothAreNegativeExponents) {
     Posit *posit1 = Utils::createPositByUint(16, 0, 0x1800);
     Posit *posit2 = Utils::createPositByUint(16, 0, 0x6E00);
 
@@ -97,7 +97,7 @@ void shouldReturnAddedValueOfNegativeExponentWhenBothAreNegativeExponents() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnSecondNumberConvertedIntoFirstNumberConstraintsWhenFirstNumberIsZero() {
+TEST(Posit_add, shouldReturnSecondNumberConvertedIntoFirstNumberConstraintsWhenFirstNumberIsZero) {
     Posit *posit1 = Utils::createPositByUint(8, 3, 0x00);
     Posit *posit2 = Utils::createPositByUint(16, 1, 0x5AD8);
 
@@ -105,7 +105,7 @@ void shouldReturnSecondNumberConvertedIntoFirstNumberConstraintsWhenFirstNumberI
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnInfinityInTheFirstNumberFormatWhenTheSecondNumberIsInfinity() {
+TEST(Posit_add, shouldReturnInfinityInTheFirstNumberFormatWhenTheSecondNumberIsInfinity) {
     Posit *posit1 = Utils::createPositByUint(16, 1, 0x5AD8);
     Posit *posit2 = Utils::createPositByUint(8, 2, 0x80);
 
@@ -113,7 +113,8 @@ void shouldReturnInfinityInTheFirstNumberFormatWhenTheSecondNumberIsInfinity() {
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberIsNegativeAndSameExponentBits(){
+TEST(Posit_add,
+     shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberIsNegativeAndSameExponentBits) {
     Posit *posit1 = Utils::createPositByUint(8, 1, 0x00);
     Posit *posit2 = Utils::createPositByUint(16, 1, 0x9D00);
 
@@ -121,7 +122,7 @@ void shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberI
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess(){
+TEST(Posit_add, shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess) {
     Posit *posit1 = Utils::createPositByUint(8, 1, 0x00);
     Posit *posit2 = Utils::createPositByUint(16, 0, 0x9D00);
 
@@ -129,7 +130,7 @@ void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore(){
+TEST(Posit_add, shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore) {
     Posit *posit1 = Utils::createPositByUint(16, 1, 0x0000);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x9D);
 
@@ -137,7 +138,7 @@ void shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfSameSize(){
+TEST(Posit_add, shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfSameSize) {
     Posit *posit1 = Utils::createPositByUint(8, 0, -0x9D);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x9D);
 
@@ -145,7 +146,7 @@ void shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfSameSize(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize(){
+TEST(Posit_add, shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x9D);
     Posit *posit2 = Utils::createPositByUint(16, 2, -0xB680);
 
@@ -153,70 +154,43 @@ void shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize(){
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive(){
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive) {
     Posit *posit1 = Utils::createPositByUint(8, 1, 0x54);
-    Posit *posit2 = Utils::createPositByUint(8,1,0xBE);
+    Posit *posit2 = Utils::createPositByUint(8, 1, 0xBE);
 
     Posit *expectedPosit = Utils::createPositByUint(8, 1, 0x46);
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndPositive(){
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndPositive) {
     Posit *posit1 = Utils::createPositByUint(8, 1, 0x42);
-    Posit *posit2 = Utils::createPositByUint(8,1,0xAC);
+    Posit *posit2 = Utils::createPositByUint(8, 1, 0xAC);
 
     Posit *expectedPosit = Utils::createPositByUint(8, 1, 0xBA);
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
 
-void shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive1(){
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive1) {
     Posit *posit1 = Utils::createPositByUint(16, 2, 0x64AF);
-    Posit *posit2 = Utils::createPositByUint(16,2,-0x50BC);
+    Posit *posit2 = Utils::createPositByUint(16, 2, -0x50BC);
 
     Posit *expectedPosit = Utils::createPositByUint(16, 2, 0x6423);
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndNegative1(){
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndNegative1) {
     Posit *posit1 = Utils::createPositByUint(16, 2, -0x50BC);
-    Posit *posit2 = Utils::createPositByUint(16,2,0x64AF);
+    Posit *posit2 = Utils::createPositByUint(16, 2, 0x64AF);
 
     Posit *expectedPosit = Utils::createPositByUint(16, 2, 0x6423);
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
 }
 
-void shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative(){
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative) {
     Posit *posit1 = Utils::createPositByUint(16, 2, -0x64AF);
-    Posit *posit2 = Utils::createPositByUint(16,2,0x50BC);
+    Posit *posit2 = Utils::createPositByUint(16, 2, 0x50BC);
 
     Posit *expectedPosit = Utils::createPositByUint(16, 2, -0x6423);
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
-}
-
-int PositAddTest::test() {
-    shouldReturnZeroPositWhenTwoPositsAreAdded();
-    shouldReturnAnotherPositValueWhenTheCurrentPositIsZero();
-    shouldReturnCurrentPositValueWhenTheAnotherPositValueIsZero();
-    shouldReturnInfinityWhenTheCurrentValueIsInfinity();
-    shouldReturnInfinityWhenTheAnotherPositValueIsInfinity();
-    shouldReturnAddedValueWhenBothExponentsAndSignsAreEqual();
-    shouldReturnAddedValueWhenBothExponentAndSignsAreEqual1();
-    shouldReturnAddedValueWhenBothExponentAndSignsAreEqual2();
-    shouldReturnAddedValueWhenBothExponentsAreNotEqualButSignIsPositive();
-    shouldReturnAddedValueWhenBothExponentsAreNotEqualAndAreNegative();
-    shouldReturnAddedValueOfNegativeExponentWhenBothAreNegativeExponents();
-    shouldReturnSecondNumberConvertedIntoFirstNumberConstraintsWhenFirstNumberIsZero();
-    shouldReturnInfinityInTheFirstNumberFormatWhenTheSecondNumberIsInfinity();
-    shouldReturnSecondNumberAsNegativeWhenFirstNumberIsInfinityAndSecondNumberIsNegativeAndSameExponentBits();
-    shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreLess();
-    shouldReturnInfinityWhenExponentBitsAreNotEqualAndTotalBitsAreMore();
-    shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfSameSize();
-    shouldReturnZeroWhenTwoDifferentSignsOfSameValueOfDifferentSize();
-    shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive();
-    shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndPositive();
-    shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositive1();
-    shouldReturnTheSubtractedValueWhenFirstOneIsLesserAndNegative1();
-    shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative();
-    return 0;
 }

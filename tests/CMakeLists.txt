@@ -1,12 +1,32 @@
+add_library(Utils "")
+
+target_sources(
+        Utils
+        PRIVATE
+        Utils.cpp
+        PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}/Utils.h
+)
+
+target_include_directories(
+        Utils
+        PUBLIC
+        ${CMAKE_CURRENT_LIST_DIR}
+)
+
 add_executable(
         unit_tests
-        example_add.cpp
+        PositCreateDoubleTest.cpp
+        PositCreateTest.cpp
+        PositCreateFloatTest.cpp
+        PositAddTest.cpp
 )
 
 target_link_libraries(
         unit_tests
         gtest_main
         Posit
+        Utils
 )
 
 add_test(
@@ -15,22 +35,3 @@ add_test(
         COMMAND
             ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/unit_tests
 )
-
-add_executable(all_tests
-        tests.cpp
-        ../src/Posit.cpp
-        ../src/Posit.h
-        ./Utils.h
-        ./Utils.cpp
-        PositAddTest.h
-        PositAddTest.cpp
-        ./Testable.h
-        ./PositCreateTest.cpp
-        ./PositCreateTest.h
-        PositCreateDoubleTest.cpp
-        PositCreateDoubleTest.h
-        PositCreateFloatTest.cpp
-        PositCreateFloatTest.h
-        )
-
-add_test(all_tests all_tests)

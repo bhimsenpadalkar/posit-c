@@ -1,20 +1,16 @@
-//
-// Created by sai-ganesh on 06/08/19.
-//
-
-#include "PositCreateFloatTest.h"
-
 #include<iostream>
-#include "../src/Posit.h"
+#include "Posit.h"
 #include "Utils.h"
+#include "gtest/gtest.h"
+
 using namespace std;
 
-void shouldReturnZeroForTheNumberZeroAsAPosit() {
+TEST(Posit_to_float, shouldReturnZeroForTheNumberZeroAsAPosit) {
     Posit *num = Utils::createPositByUint(8, 0, 0x00);
     ASSERT(num->toFloat(), 0);
 }
 
-void shouldReturnInfiniteForTheNumberInfiniteAsAPosit() {
+TEST(Posit_to_float, shouldReturnInfiniteForTheNumberInfiniteAsAPosit) {
     Posit *num = Utils::createPositByUint(8, 0, 0x80);
 
     union FloatRep {
@@ -27,46 +23,34 @@ void shouldReturnInfiniteForTheNumberInfiniteAsAPosit() {
     ASSERT(inf.binaryValue, 0x7F800000);
 }
 
-void shouldReturnOneForThePositNumberOne() {
+TEST(Posit_to_float, shouldReturnOneForThePositNumberOne) {
     Posit *num = Utils::createPositByUint(8, 1, 0x40);
     ASSERT(num->toFloat(), 1);
 }
 
 
-void shouldConvertPositivePositValueIntoFloat() {
+TEST(Posit_to_float, shouldConvertPositivePositValueIntoFloat) {
     Posit *num = Utils::createPositByUint(16, 1, 0x770E);
     ASSERT(num->toFloat(), 56.4375);
 }
 
-void shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits() {
+TEST(Posit_to_float, shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits) {
     Posit *num = Utils::createPositByUint(8, 0, 0x20);
     ASSERT(num->toFloat(), 0.5);
 }
 
-void shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits() {
+TEST(Posit_to_float, shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits) {
     Posit *num = Utils::createPositByUint(8, 0, 0xE0);
     ASSERT(num->toFloat(), -0.5);
 }
 
 
-void shouldConvertNegativePositValueIntoFloat() {
+TEST(Posit_to_float, shouldConvertNegativePositValueIntoFloat) {
     Posit *num = Utils::createPositByUint(16, 1, 0xAA00);
     ASSERT(num->toFloat(), -2.75);
 }
 
-void shouldConvert64BitPositIntoFloat(){
+TEST(Posit_to_float, shouldConvert64BitPositIntoFloat) {
     Posit *num = Utils::createPositByUint(64, 35, 0x4000000006000000);
     ASSERT(num->toFloat(), 3);
-}
-
-int PositCreateFloatTest::test() {
-    shouldReturnZeroForTheNumberZeroAsAPosit();
-    shouldReturnInfiniteForTheNumberInfiniteAsAPosit();
-    shouldReturnOneForThePositNumberOne();
-    shouldConvertPositivePositValueIntoFloat();
-    shouldConvertPositValueIntoFloatForSmallPositivePositWhenNoExponentBits();
-    shouldConvertPositValueIntoFloatForSmallNegativePositWhenNoExponentBits();
-    shouldConvertNegativePositValueIntoFloat();
-    shouldConvert64BitPositIntoFloat();
-    return 0;
 }

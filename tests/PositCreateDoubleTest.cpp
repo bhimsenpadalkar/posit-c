@@ -1,36 +1,35 @@
-#include "PositCreateDoubleTest.h"
-
 #include<iostream>
-#include "../src/Posit.h"
+#include "Posit.h"
 #include "Utils.h"
+#include "gtest/gtest.h"
 using namespace std;
 
-void shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits() {
+TEST(Posit_to_double,shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits){
     Posit *num = Utils::createPositByUint(8, 0, 0x20);
-    ASSERT(num->toDouble(), 0.5);
+    ASSERT_EQ(num->toDouble(),0.5);
 }
 
-void shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits() {
+TEST(Posit_to_double,shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits) {
     Posit *num = Utils::createPositByUint(8, 0, 0xE0);
-    ASSERT(num->toDouble(), -0.5);
+    ASSERT_EQ(num->toDouble(), -0.5);
 }
 
-void shouldConvertPositivePositValueIntoDouble() {
+TEST(Posit_to_double,shouldConvertPositivePositValueIntoDouble) {
     Posit *num = Utils::createPositByUint(16, 1, 0x770E);
-    ASSERT(num->toDouble(), 56.4375);
+    ASSERT_EQ(num->toDouble(), 56.4375);
 }
 
-void shouldConvertNegativePositValueIntoDouble() {
+TEST(Posit_to_double,shouldConvertNegativePositValueIntoDouble) {
     Posit *num = Utils::createPositByUint(16, 1, 0xAA00);
-    ASSERT(num->toDouble(), -2.75);
+    ASSERT_EQ(num->toDouble(), -2.75);
 }
 
-void shouldGiveZeroRepresentationOfPositToDouble() {
+TEST(Posit_to_double,shouldGiveZeroRepresentationOfPositToDouble) {
     Posit *num = Utils::createPositByUint(8, 0, 0x00);
-    ASSERT(num->toDouble(), 0);
+    ASSERT_EQ(num->toDouble(), 0);
 }
 
-void shouldGiveInfiniteRepresentationOfPositToDouble() {
+TEST(Posit_to_double,shouldGiveInfiniteRepresentationOfPositToDouble) {
     Posit *num = Utils::createPositByUint(8, 0, 0x80);
 
     union DoubleRep {
@@ -39,15 +38,5 @@ void shouldGiveInfiniteRepresentationOfPositToDouble() {
     };
     DoubleRep inf = DoubleRep{};
     inf.doubleValue = num->toDouble();
-    ASSERT(inf.binaryValue, 0x7FF0000000000000);
-}
-
-int PositCreateDoubleTest::test() {
-    shouldGiveZeroRepresentationOfPositToDouble();
-    shouldGiveInfiniteRepresentationOfPositToDouble();
-    shouldConvertPositValueIntoDoubleForSmallPositivePositWhenNoExponentBits();
-    shouldConvertPositValueIntoDoubleForSmallNegativePositWhenNoExponentBits();
-    shouldConvertPositivePositValueIntoDouble();
-    shouldConvertNegativePositValueIntoDouble();
-    return 0;
+    ASSERT_EQ(inf.binaryValue, 0x7FF0000000000000);
 }

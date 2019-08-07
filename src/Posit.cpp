@@ -142,7 +142,6 @@ T Posit::getRepresentedNumber(uint8_t totalRepresentationBits, uint8_t exponentB
 FusedOperationFields Posit::extractFields(bool sign, uint64_t positBits) const {
     FusedOperationFields floatFields = FusedOperationFields{false, 0, 0};
     int usedBits = 1;
-    cout << ( positBits >> 56) <<endl;
     bool regimeSign = positBits >> (TOTAL_POSIT_BITS - usedBits);
     positBits <<= 1;
     int regimeBits = 1 + calculateRegimeBits(positBits, regimeSign);

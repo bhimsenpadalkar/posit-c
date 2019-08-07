@@ -1,48 +1,43 @@
-//
-// Created by sai-ganesh on 06/08/19.
-//
-
 #include<iostream>
-#include "PositCreateTest.h"
-#include "../src/Posit.h"
+#include "Posit.h"
 #include "Utils.h"
-
+#include "gtest/gtest.h"
 using namespace std;
 
-void shouldConvertFloatToPositWithLessPrecision_8() {
+TEST(Posit_Create,shouldConvertFloatToPositWithLessPrecision_8) {
     Posit *num = Utils::createPositByFloat(8, 0, 4.625);
 
-    ASSERT(num->getBinaryFormat(), 0x71);
+    ASSERT_EQ(num->getBinaryFormat(), 0x71);
 }
 
-void shouldConvertFloatToPositWithLessPrecision_10() {
+TEST(Posit_Create,shouldConvertFloatToPositWithLessPrecision_10) {
     Posit *num = Utils::createPositByFloat(10, 0, 4.625);
 
-    ASSERT(num->getBinaryFormat(), 0x1C5);
+    ASSERT_EQ(num->getBinaryFormat(), 0x1C5);
 }
 
-void shouldConvertFloatToPositWithExponent() {
+TEST(Posit_Create,shouldConvertFloatToPositWithExponent) {
     Posit *num = Utils::createPositByFloat(8, 2, 0.009765625);
 
-    ASSERT(num->getBinaryFormat(), 0x15);
+    ASSERT_EQ(num->getBinaryFormat(), 0x15);
 }
 
-void shouldConvertNegativeFloatToPositWithExponent() {
+TEST(Posit_Create,shouldConvertNegativeFloatToPositWithExponent) {
     Posit *num = Utils::createPositByFloat(8, 2, -0.009765625);
 
-    ASSERT(num->getBinaryFormat(), -0x15);
+    ASSERT_EQ(num->getBinaryFormat(), -0x15);
 }
 
-void shouldNotHavingExponentWhileTheRegimeBitsAreMore() {
+TEST(Posit_Create,shouldNotHavingExponentWhileTheRegimeBitsAreMore) {
     Posit *num = Utils::createPositByFloat(8, 1, 2048.2);
 
-    ASSERT(num->getBinaryFormat(), 0x7E);
+    ASSERT_EQ(num->getBinaryFormat(), 0x7E);
 }
 
-void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore() {
+TEST(Posit_Create,shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore) {
     Posit *num = Utils::createPositByFloat(8, 1, 512.9);
 
-    ASSERT(num->getBinaryFormat(), 0x7D);
+    ASSERT_EQ(num->getBinaryFormat(), 0x7D);
 }
 
 /*
@@ -55,35 +50,21 @@ void shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore() {
  * https://www.johndcook.com/blog/2018/04/11/anatomy-of-a-posit-number/
  */
 
-void shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1() {
+TEST(Posit_Create,shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1) {
     Posit *num = Utils::createPositByFloat(8, 1, 4096);
 
-    ASSERT(num->getBinaryFormat(), 0x7F);
+    ASSERT_EQ(num->getBinaryFormat(), 0x7F);
 }
 
 
-void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore() {
+TEST(Posit_Create,shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore) {
     Posit *num = Utils::createPositByFloat(8, 2, 262144.3);
 
-    ASSERT(num->getBinaryFormat(), 0x7D);
+    ASSERT_EQ(num->getBinaryFormat(), 0x7D);
 }
 
-void shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1() {
+TEST(Posit_Create,shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1) {
     Posit *num = Utils::createPositByFloat(8, 3, 302365697638.4);
 
-    ASSERT(num->getBinaryFormat(), 0x7D);
-}
-
-int PositCreateTest::test() {
-    shouldConvertFloatToPositWithLessPrecision_8();
-    shouldConvertFloatToPositWithLessPrecision_10();
-    shouldConvertFloatToPositWithExponent();
-    shouldConvertNegativeFloatToPositWithExponent();
-    shouldNotHavingFractionWhileTheRegimeBitsAndExponentAreMore();
-
-    shouldNotHavingExponentWhileTheRegimeBitsAreMore();
-    shouldNotHavingFractionOrExponentWhileTheRegimeBitsAreMore1();
-    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore();
-    shouldHaveLessExponentBitsAndNoFractionBitsWhileTheRegimeBitsAreMore1();
-    return 0;
+    ASSERT_EQ(num->getBinaryFormat(), 0x7D);
 }
