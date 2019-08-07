@@ -66,4 +66,6 @@ public:
     FusedOperationFields &IncreaseExponent(FusedOperationFields &posit2Fields, uint64_t exponentDifference) const;
 
     Posit *subtract(Posit *pPosit);
+
+    Posit *negotiate();
 };

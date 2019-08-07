@@ -9,11 +9,18 @@ void verifySubtractionOfPosits(Posit *posit1, Posit *posit2, Posit *expectedPosi
     Utils::verifyPosits(expectedPosit, actualPosit);
 }
 
-
-TEST(Posit_subtract, shouldReturnZeroPositWhenTwoPositsAreAdded) {
+TEST(Posit_subtract, shouldReturnZeroPositWhenTwoZeroesAreSubtracted) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
 
     Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x0);
+    verifySubtractionOfPosits(posit1, posit2, expectedPosit);
+}
+
+TEST(Posit_subtract, shouldReturnInfinitePositWhenOneOfthePositIsInfinite){
+    Posit *posit1 = Utils::createPositByUint(8, 0, 0x80);
+    Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
+
+    Posit *expectedPosit = Utils::createPositByUint(8, 0, 0x80);
     verifySubtractionOfPosits(posit1, posit2, expectedPosit);
 }

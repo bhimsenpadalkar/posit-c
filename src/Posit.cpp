@@ -410,6 +410,20 @@ Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FusedOperationFiel
     return positRepresentation;
 }
 
-Posit *Posit::subtract(Posit *pPosit) {
-    return new Posit(totalBits,exponentBits);
+Posit *Posit::subtract(Posit *anotherPosit) {
+    anotherPosit = anotherPosit->negotiate();  
+    return this->add(anotherPosit);
+}
+
+Posit *Posit::negotiate() {
+    uint64_t positBits = this->binaryFormat << (TOTAL_POSIT_BITS - totalBits);
+    bool sign1 = positBits >> (TOTAL_POSIT_BITS - 1);
+    positBits <<= 1;
+    positBits = sign1 ? -positBits : positBits;
+    if(positBits == 0x0){
+        return this->clone();
+    }
+    Posit *newPosit = new Posit(totalBits, exponentBits);
+    newPosit->binaryFormat = -this->binaryFormat;
+    return newPosit;
 }
