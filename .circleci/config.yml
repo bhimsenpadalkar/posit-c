@@ -16,8 +16,14 @@ jobs:
           name: Install CMAKE
           command: 'apt-get update && sudo apt-get install -y cmake'
       - run:
+          name: Building make files
+          command: 'cmake .'
+      - run:
+          name: Building execitables
+          command: 'make'
+      - run:
           name: Running Tests
-          command: 'sh ./test.sh'
+          command: 'ctest'
       - run:
           name: showing files
-          command: './bin/util_tests'
+          command: './bin/unit_tests'
