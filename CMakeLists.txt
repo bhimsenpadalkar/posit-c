@@ -15,6 +15,8 @@ endif()
 add_subdirectory(src)
 
 include(cmake/googletest.cmake)
+set(BUILD_GMOCK OFF)
+set(BUILD_GTEST ON)
 fetch_googletest(
         ${PROJECT_SOURCE_DIR}/cmake
         ${PROJECT_BINARY_DIR}/googletest
