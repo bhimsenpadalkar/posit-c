@@ -12,3 +12,8 @@ posit_c
 Testing/
 .vscode/
 tests/all_tests
+bin/
+src/CMakeFiles/
+googletest/
+lib/
+src/Makefile
