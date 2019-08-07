@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-set -e
 cmake .
 make
 ctest
-./bin/unit_tests
+if [ $? -ne 0 ]; then
+  ./bin/unit_tests
+fi
