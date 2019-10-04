@@ -366,6 +366,11 @@ Posit *Posit::create(uint8_t totalBits, uint8_t exponentBits, FusedOperationFiel
     long int exponent = floatFields.exponent;
     bool sign = floatFields.sign;
 
+    if(exponent > ((totalBits - 2) * calculatePowerOfTwo(exponentBits))){
+        positRepresentation->setPositValue(calculatePowerOfTwo(totalBits - 1));
+        return positRepresentation;
+    }
+
     bool exponentSign = exponent < 0;
     exponent = exponentSign ? -exponent : exponent;
 

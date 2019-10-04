@@ -36,6 +36,20 @@ private:
 
     Posit *differentSignAddition(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields);
 
+    Posit* clone();
+
+    Posit* clone(uint8_t totalBitsOfPosit,uint8_t exponentBitsOfPosit);
+
+    static RegimeFields generateRegime(bool sign, long exponent,uint8_t exponentBits);
+
+    static uint64_t generateExponent(bool sign, long exponent,uint8_t exponentBits);
+
+    void leftShiftFractionAndHiddenBit(FusedOperationFields &positFields) const;
+
+    void swapIfExponentIsHigher(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields) const;
+
+    FusedOperationFields &IncreaseExponent(FusedOperationFields &posit2Fields, uint64_t exponentDifference) const;
+
 public:
     Posit(uint8_t totalBits, uint8_t exponentBits);
 
@@ -50,20 +64,6 @@ public:
     float toFloat();
 
     Posit* add(Posit* anotherPosit);
-
-    Posit* clone();
-
-    Posit* clone(uint8_t totalBitsOfPosit,uint8_t exponentBitsOfPosit);
-
-    static RegimeFields generateRegime(bool sign, long exponent,uint8_t exponentBits);
-
-    static uint64_t generateExponent(bool sign, long exponent,uint8_t exponentBits);
-
-    void leftShiftFractionAndHiddenBit(FusedOperationFields &positFields) const;
-
-    void swapIfExponentIsHigher(FusedOperationFields &posit1Fields, FusedOperationFields &posit2Fields) const;
-
-    FusedOperationFields &IncreaseExponent(FusedOperationFields &posit2Fields, uint64_t exponentDifference) const;
 
     Posit *subtract(Posit *pPosit);
 

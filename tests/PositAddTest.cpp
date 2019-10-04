@@ -9,6 +9,14 @@ void verifyAdditionOfPosits(Posit *posit1, Posit *posit2, Posit *expectedPosit) 
     Utils::verifyPosits(expectedPosit, actualPosit);
 }
 
+void test(uint8_t totalBits, uint8_t exponentBits, uint64_t positValue1, uint64_t positValue2, uint64_t result){
+    Posit *posit1 = Utils::createPositByUint( totalBits,exponentBits,positValue1);
+    Posit *posit2 = Utils::createPositByUint(totalBits,exponentBits,positValue2);
+
+    Posit *expectedPosit = Utils::createPositByUint(totalBits,exponentBits,result);
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
 TEST(Posit_add, shouldReturnZeroPositWhenTwoPositsAreAdded) {
     Posit *posit1 = Utils::createPositByUint(8, 0, 0x0);
     Posit *posit2 = Utils::createPositByUint(8, 0, 0x0);
@@ -193,4 +201,34 @@ TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative) 
 
     Posit *expectedPosit = Utils::createPositByUint(16, 2, -0x6423);
     verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+TEST(Posit_add, shouldReturnAddedValueWhenBothExponentAndSignsAreEqual0) {
+    Posit *posit1 = Utils::createPositByUint(8,0,0x94);
+    Posit *posit2 = Utils::createPositByUint(8,0,0x9E);
+    Posit *expectedPosit = Utils::createPositByUint(8,0,0x8D);
+
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndPositiveWithSameExponentBitsAndTotalBits0) {
+    Posit *posit1 = Utils::createPositByUint(8,1, 0x54);
+    Posit *posit2 = Utils::createPositByUint(8,1, 0xBE);
+    Posit *expectedPosit = Utils::createPositByUint(8,0,0x46);
+
+    verifyAdditionOfPosits(posit1, posit2, expectedPosit);
+}
+
+TEST(Posit_add, shouldReturnZeroWhenBothValuesAreEqualHavingDifferentSigns0) {
+    test(8, 0, 0x9D, 0x63, 0x00);
+    test(8, 1, 0x9D, 0x63, 0x00);
+    test(8, 2, 0x9D, 0x63, 0x00);
+}
+
+TEST(Posit_add, shouldReturnTheSubtractedValueWhenFirstOneIsGreaterAndNegative0 ) {
+    test(16, 2, 0x9B51, 0x50BC, 0x9BDD);
+}
+
+TEST(Posit_add, shouldReturnInfiniteWhenTheExponentAreAtMax0 ){
+    test(8, 0, 0x7F, 0x7F, 0x80);
 }
